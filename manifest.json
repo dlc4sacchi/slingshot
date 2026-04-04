@@ -1,0 +1,100 @@
+{
+  "manifest_version": 3,
+  "name": "Slingshot",
+  "version": "0.4.0",
+  "description": "Type a shortcut, get slung to the right place instantly.",
+  "permissions": ["storage", "tabs", "alarms"],
+  "host_permissions": [
+    "https://www.google.com/search*",
+    "https://www.bing.com/search*",
+    "https://duckduckgo.com/*",
+    "https://search.brave.com/search*",
+    "https://www.ecosia.org/search*",
+    "https://kagi.com/search*",
+    "https://www.startpage.com/search*",
+    "https://www.mojeek.com/search*",
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "https://chat.deepseek.com/*",
+    "https://www.kimi.com/*",
+    "https://huggingface.co/*",
+    "https://manus.im/*",
+    "https://*.supabase.co/*"
+  ],
+  "action": {
+    "default_popup": "pages/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "omnibox": { "keyword": "bg" },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+B",
+        "mac": "Alt+Shift+B"
+      },
+      "description": "Open Slingshot"
+    },
+    "open_popup": {
+      "suggested_key": {
+        "default": "Alt+Shift+B",
+        "mac": "Alt+Shift+B"
+      },
+      "description": "Open Slingshot"
+    }
+  },
+  "options_ui": {
+    "page": "pages/settings.html",
+    "open_in_tab": true
+  },
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/search*",
+        "https://www.bing.com/search*",
+        "https://duckduckgo.com/*",
+        "https://search.brave.com/search*",
+        "https://www.ecosia.org/search*",
+        "https://kagi.com/search*",
+        "https://www.startpage.com/search*",
+        "https://www.mojeek.com/search*"
+      ],
+      "js": ["scripts/search-interceptor.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://chat.deepseek.com/*",
+        "https://www.kimi.com/*",
+        "https://huggingface.co/*"
+      ],
+      "js": ["scripts/ai-autosend.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://manus.im/*"
+      ],
+      "js": ["scripts/ai-native.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' https://t0.gstatic.com https://t1.gstatic.com https://t2.gstatic.com https://t3.gstatic.com data:"
+  }
+}

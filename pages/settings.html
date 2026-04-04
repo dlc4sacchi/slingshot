@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slingshot Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#edeaff; --s1:#ffffff; --s2:#f0eeff; --s3:#e2deff;
+  --border:#cdc8f7; --border2:#a9a0f0;
+  --p:#5548e8; --p2:#7b73f5; --t:#057a52;
+  --text:#110f2a; --text2:#4a4768; --text3:#8a87a8;
+  --amber:#d97706; --amb-bg:#fffbeb; --amb-bd:#fde68a;
+  --red:#dc2626; --red-bg:#fef2f2; --red-bd:#fecaca;
+  --grad:linear-gradient(135deg,#6c63ff 0%,#34d399 100%);
+  --r:14px; --rs:9px; --rm:11px;
+  --sidebar:240px;
+  --dur-fast:120ms; --dur-mid:180ms; --dur-slow:260ms;
+  --ease-out:ease-out; --ease-standard:cubic-bezier(0.2,0,0,1);
+}
+html.dark :root, html.dark{
+  --bg:#08070f; --s1:#0e0d1a; --s2:#131224; --s3:#1a1830;
+  --border:rgba(108,99,255,0.11); --border2:rgba(108,99,255,0.24);
+  --p:#8b84ff; --p2:#b0abff; --t:#34d399;
+  --text:#f0eeff; --text2:rgba(240,238,255,0.52); --text3:rgba(240,238,255,0.26);
+  --amber:#f59e0b; --amb-bg:rgba(245,158,11,0.07); --amb-bd:rgba(245,158,11,0.18);
+  --red:#f87171; --red-bg:rgba(248,113,113,0.07); --red-bd:rgba(248,113,113,0.18);
+  --glow:0 0 0 1px rgba(139,132,255,0.15),0 2px 12px rgba(108,99,255,0.08);
+}
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=Sora:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+body{font-family:'Sora',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100%;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.sb-top{padding:22px 18px 16px;border-bottom:1px solid var(--border)}
+
+/* logo */
+.sb-logo{display:flex;align-items:center;gap:8px;line-height:1;user-select:none}
+.sb-logo-wordmark{display:inline-flex;align-items:baseline;line-height:1}
+.logo-bang{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;font-weight:800;letter-spacing:-1.2px;color:var(--text)}
+html:not(.dark) .logo-bang{color:#0a0818}
+html.dark .logo-bang{color:#ffffff}
+.logo-ify{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;font-weight:800;letter-spacing:-1.2px;color:var(--text3)}
+html.dark .logo-ify{color:#555580}
+/* ── Theme transition animation ── */
+html.theme-ready{transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out)}
+html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out),border-color var(--dur-slow) var(--ease-out),box-shadow var(--dur-slow) var(--ease-out)}
+/* exclude elements that need their own transitions */
+.tog,.tog-k,.storage-bar-fill,.nav-item,.site-row,.del-btn,.inact-btn,.warn-icon .warn-tip,.cf,.bang-display,.hw-step{transition-duration:unset}
+.logo-mark{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--p);margin-left:2px;margin-bottom:2px;flex-shrink:0;align-self:flex-end}
+.sb-ver{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:1px}
+.sb-nav{padding:12px 10px;flex:1}
+.nav-section{margin-bottom:4px}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);padding:6px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);border:1px solid transparent;user-select:none}
+.nav-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.nav-item:hover{background:var(--s2);color:var(--text)}
+.nav-item.active{background:rgba(108,99,255,0.1);color:var(--p);border-color:rgba(108,99,255,0.15)}
+.nav-item .badge{margin-left:auto;font-size:10px;font-family:'DM Mono',monospace;background:rgba(108,99,255,0.1);color:var(--p);border:1px solid rgba(108,99,255,0.15);padding:1px 6px;border-radius:20px}
+.sb-bottom{padding:12px 10px;border-top:1px solid var(--border)}
+.storage-bar-wrap{margin-bottom:10px;padding:0 2px}
+.storage-bar-label{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:5px}
+.storage-bar-track{height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.storage-bar-fill{height:100%;border-radius:2px;background:var(--grad);transition:width 0.4s ease}
+.storage-bar-fill.warn{background:linear-gradient(90deg,#f59e0b,#f97316)}
+.storage-bar-fill.danger{background:linear-gradient(90deg,#ef4444,#dc2626)}
+.plan-chip{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--s2);border:1px solid var(--border);border-radius:10px}
+.plan-name{font-size:12px;font-weight:600;color:var(--text)}
+.plan-tag{font-size:10px;font-weight:700;font-family:'DM Mono',monospace;color:var(--p);background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.18);padding:2px 7px;border-radius:20px}
+.plan-tag.pro{color:var(--t);background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.2)}
+.main{flex:1;overflow-y:auto}
+.main-inner{padding:32px 36px;max-width:720px;width:100%;margin:0 auto}
+.pg-header{margin-bottom:18px}
+.pg-title{font-size:24px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px}
+.sync-btn{width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color var(--dur-mid) var(--ease-out),color var(--dur-mid) var(--ease-out),border-color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out);flex-shrink:0}
+.sync-btn:hover{background:var(--s2);color:var(--text);border-color:var(--border2)}
+.sync-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sync-btn.syncing svg{animation:sync-spin .8s linear infinite}
+.sync-btn.syncing{pointer-events:none;opacity:.6}
+@keyframes sync-spin{to{transform:rotate(360deg)}}
+.pg-sub{font-size:14px;color:var(--text2);line-height:1.6}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;transition:border-color var(--dur-slow) var(--ease-standard)}
+.card:hover{border-color:var(--border2)}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:13px;font-weight:600;color:var(--text)}
+.fire-pill{font-size:11px;font-family:'DM Mono',monospace;color:var(--p)}
+.site-row{display:flex;align-items:center;padding:11px 18px;border-bottom:1px solid var(--border);gap:12px;transition:background-color var(--dur-fast) var(--ease-out),opacity var(--dur-mid) var(--ease-out),transform var(--dur-mid) var(--ease-out)}
+.site-row:last-child{border-bottom:none}
+.site-row:hover{background:var(--s2)}
+.site-row.enter{animation:row-enter var(--dur-mid) var(--ease-out)}
+.site-row.exit{opacity:0;transform:translateY(-6px)}
+.fav{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden}
+.fav img{width:17px;height:17px;object-fit:contain}
+.site-info{flex:1;overflow:hidden;min-width:0}
+.site-top{display:flex;align-items:center;gap:7px;margin-bottom:2px}
+.site-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Bang pill — lives directly in .site-row as a centred column */
+.bang-col{width:90px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.bang-tag{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--p);background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.15);padding:4px 12px;border-radius:20px;white-space:nowrap}
+.bang-edit-wrap{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;width:100%}
+.bang-display:hover{background:rgba(108,99,255,0.15);border-color:rgba(108,99,255,0.3)}
+.bang-edit-input{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--p);background:rgba(108,99,255,0.1);border:1px solid var(--p);border-radius:20px;padding:4px 8px;width:72px;min-width:52px;max-width:72px;outline:none;text-align:center}
+.bang-edit-input.conflict{border-color:var(--red);color:var(--red);background:var(--red-bg);animation:shake 0.32s ease-out}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+@keyframes row-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.site-url{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.site-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;min-width:62px;justify-content:flex-end}
+.del-btn, .edit-btn{width:26px;height:26px;border-radius:7px;border:none;background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.site-row:hover .del-btn, .site-row:hover .edit-btn, .inact-btn:hover .inact-edit{opacity:1}
+.custom-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.custom-actions .del-btn, .custom-actions .edit-btn{opacity:1}
+.del-btn:hover{background:var(--red-bg);color:var(--red)}
+.edit-btn:hover{background:var(--s3);color:var(--text)}
+.del-btn svg, .edit-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.inact-edit{width:20px;height:20px;margin-left:auto;opacity:0;transition:opacity var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out)}
+.inact-badge{font-size:8.5px;background:var(--s2);border:1px solid var(--border);color:var(--text3);padding:1px 5px;border-radius:4px;margin-left:6px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase}
+.cancel-edit-link{font-size:11px;color:var(--text3);cursor:pointer;margin-left:6px;background:none;border:none;padding:0;font-family:inherit;transition:color var(--dur-fast) var(--ease-out);flex-shrink:0}
+.cancel-edit-link:hover{color:var(--text)}
+.tog{width:38px;height:22px;border-radius:11px;background:var(--s3);border:1px solid var(--border);cursor:pointer;position:relative;transition:background-color var(--dur-mid) var(--ease-out),border-color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out);flex-shrink:0}
+.tog.on{background:var(--p);border-color:transparent}
+.tog-k{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left var(--dur-mid) var(--ease-standard),transform var(--dur-fast) var(--ease-out);box-shadow:0 1px 3px rgba(0,0,0,0.18)}
+.tog.on .tog-k{left:18px}
+.tog:active{transform:translateY(1px)}
+.tog.on .tog-k{transform:scale(1)}
+.empty-row{padding:24px 18px;text-align:center;font-size:13px;color:var(--text3);font-family:'DM Mono',monospace}
+.inactive-wrap{padding:12px 18px;border-top:1px solid var(--border)}
+.inactive-lbl{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:8px}
+.inactive-grid-container{position:relative;max-height:106px;overflow:hidden;transition:max-height var(--dur-slow) var(--ease-standard)}
+.inactive-grid-container.expanded{max-height:2000px}
+.inactive-grid{display:flex;flex-wrap:wrap;gap:5px;padding-top:4px;padding-bottom:2px}
+.show-all-btn{height:28px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;gap:5px;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:8px;font-size:12px;font-weight:500;font-family:inherit;color:var(--p);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);flex-shrink:0;box-sizing:border-box}
+.show-all-btn:hover{background:rgba(108,99,255,0.18);border-color:var(--border2)}
+.show-all-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;transition:transform var(--dur-slow) var(--ease-standard)}
+.inactive-grid-container.expanded .show-all-btn{margin-top:2px}
+.request-nudge{display:flex;align-items:center;gap:8px;padding:9px 18px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);background:var(--s2)}
+.request-nudge svg{width:13px;height:13px;stroke:var(--p);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.request-nudge strong{color:var(--p);font-weight:600}
+.request-nudge:hover{background:var(--s3)}
+.inact-btn{height:28px;padding:0 9px 0 6px;display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--border);border-radius:8px;cursor:pointer;opacity:0.82;transition:opacity var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);box-sizing:border-box}
+.inact-btn:hover{opacity:1;border-color:var(--border2)}
+.inact-ico{width:16px;height:16px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+.inact-ico img{width:11px;height:11px;object-fit:contain}
+.inact-lbl{font-size:12px;font-weight:500;color:var(--text)}
+.custom-wrap{padding:14px 18px;border-top:1px solid var(--border);background:var(--s2);border-radius:0 0 var(--r) var(--r);overflow:hidden}
+.custom-title{font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.warn-icon{position:relative;display:inline-flex;align-items:center;cursor:help;color:var(--amber);flex-shrink:0}
+.warn-icon svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.warn-icon .warn-tip{position:fixed;background:var(--s1);border:1px solid var(--amb-bd);color:var(--text2);font-size:11px;font-family:'Sora',sans-serif;font-weight:400;white-space:nowrap;padding:5px 10px;border-radius:7px;pointer-events:none;opacity:0;transition:opacity var(--dur-mid) var(--ease-out);z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);max-width:280px;white-space:normal}
+.warn-icon:hover .warn-tip{opacity:1}
+.custom-grid{display:grid;grid-template-columns:1fr 110px 1.6fr auto;gap:7px;align-items:center}
+.custom-url-row{display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;margin-top:6px}
+.pcts{color:var(--t);font-weight:700;background:rgba(5,122,82,0.1);border-radius:2px;padding:0 1px}
+.sel-hl{background:rgba(85,72,232,0.18);border-radius:2px}
+.use-example{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;display:none;align-items:center;gap:8px;flex-shrink:0;margin-top:6px}
+.use-example.visible{display:flex}
+.use-label{font-size:8.5px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
+.use-pill{background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:10px;font-family:'DM Mono',monospace}
+.use-q{color:var(--text2)}
+.use-b{color:var(--p);font-weight:700}
+.cf{padding:0 10px;height:36px;box-sizing:border-box;border-radius:8px;border:1px solid var(--border);background:var(--s1);color:var(--text);font-size:12px;font-family:'Sora',sans-serif;outline:none;transition:border-color var(--dur-fast) var(--ease-out);width:100%}
+.cf:focus{border-color:var(--p)}
+.cf.mono{font-family:'DM Mono',monospace}
+.bang-w{display:flex;align-items:center;height:36px;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;background:var(--s1);overflow:hidden;transition:border-color var(--dur-fast) var(--ease-out)}
+.bang-w:focus-within{border-color:var(--p)}
+.bang-sym{padding:0 3px 0 10px;font-size:13px;font-weight:500;color:var(--p);font-family:'DM Mono',monospace;user-select:none}
+.bang-w .cf{border:none;background:transparent;padding-left:2px}
+.add-btn{padding:0 14px;height:36px;box-sizing:border-box;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:12px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);display:flex;align-items:center;justify-content:center;line-height:1}
+.add-btn:hover{background:rgba(108,99,255,0.08)}
+.char-grid{display:flex;gap:7px;align-items:center;padding:16px 18px}
+.char-btn{width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--text2);font-size:18px;font-family:'DM Mono',monospace;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);font-weight:500}
+.char-btn:hover{border-color:var(--border2);color:var(--text)}
+.char-btn.on{border-color:var(--p);background:rgba(108,99,255,0.1);color:var(--p)}
+
+.char-hint{padding:0 18px 16px;font-size:12px;color:var(--text2)}
+.char-hint code{font-family:'DM Mono',monospace;background:var(--s2);padding:1px 5px;border-radius:4px;font-size:11px}
+/* Locked inactive pills */
+.inact-btn.inact-locked{opacity:0.45;cursor:not-allowed;pointer-events:auto}
+.inact-lock{color:var(--text3);display:inline-flex;align-items:center;margin-left:2px}
+.inact-lock svg{stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.slide{min-width:100%}
+.slide-tag{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;color:var(--t);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);padding:3px 9px;border-radius:20px;margin-bottom:12px}
+.addr-bar{background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.addr-dots{display:flex;gap:4px}
+.addr-dot{width:9px;height:9px;border-radius:50%}
+.addr-txt{font-size:13px;font-family:'DM Mono',monospace;color:var(--text);flex:1}
+.addr-txt .q{color:var(--text2)}
+.addr-txt .b{color:var(--t);font-weight:500}
+.blink{display:inline-block;width:2px;height:13px;background:var(--p);vertical-align:middle;margin-left:1px;animation:blink .9s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.outcome{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;min-height:96px}
+.chat-from{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.dot-online{width:5px;height:5px;border-radius:50%;background:var(--t)}
+.bubble-u{background:rgba(108,99,255,0.1);border-radius:10px 10px 3px 10px;padding:7px 11px;font-size:12px;display:inline-block;margin-bottom:8px;max-width:72%}
+.bubble-ai{display:flex;gap:8px}
+.ai-av{width:22px;height:22px;border-radius:7px;background:var(--grad);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:'DM Mono',monospace}
+.ai-bub{background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.13);border-radius:3px 10px 10px 10px;padding:7px 11px;font-size:12px;color:var(--text2)}
+.dots3{display:inline-flex;gap:3px;align-items:center}
+.dots3 span{width:4px;height:4px;border-radius:50%;background:var(--t);animation:d3 1.2s ease-in-out infinite}
+.dots3 span:nth-child(2){animation-delay:.2s}
+.dots3 span:nth-child(3){animation-delay:.4s}
+@keyframes d3{0%,60%,100%{opacity:.2;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.redir-txt{font-size:11px;font-family:'DM Mono',monospace;color:var(--t);margin-bottom:8px;opacity:0;transition:opacity .3s}
+.redir-txt.show{opacity:1}
+.r-row{padding:7px 0;border-bottom:1px solid var(--border)}
+.r-row:last-child{border-bottom:none}
+.r-src{font-size:10px;font-family:'DM Mono',monospace;color:rgba(52,211,153,0.6);margin-bottom:1px}
+.r-title{font-size:12px;color:var(--p);margin-bottom:2px}
+.r-snip{font-size:11px;color:var(--text3);line-height:1.4}
+.ftabs{display:flex;gap:5px}
+.ftab{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:7px 7px 0 0;padding:6px 10px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:5px;opacity:.15;transition:opacity .25s,border-color .25s}
+.ftab.show{opacity:1;border-color:var(--border2)}
+.ftab-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ftab-body{background:var(--bg);border:1px solid var(--border);border-radius:0 0 7px 7px;padding:10px 12px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-height:40px;display:flex;align-items:center;border-top:none}
+.pro-hero{background:linear-gradient(135deg,rgba(108,99,255,0.08),rgba(52,211,153,0.05));border:1px solid var(--border2);border-radius:var(--r);padding:28px 24px;margin-bottom:16px;text-align:center}
+.pro-hero-icon{width:52px;height:52px;border-radius:14px;background:var(--grad);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:#fff}
+.pro-hero-title{font-size:22px;font-weight:700;letter-spacing:-0.4px;margin-bottom:6px}
+.pro-hero-sub{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto}
+.pro-features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;text-align:left}
+.pro-feat{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:9px;transition:box-shadow var(--dur-slow) var(--ease-standard),border-color var(--dur-slow) var(--ease-standard)}
+.pro-feat:hover{border-color:var(--border2);box-shadow:var(--glow,0 0 0 1px rgba(108,99,255,0.08),0 2px 10px rgba(108,99,255,0.05))}
+.feat-ico{width:28px;height:28px;border-radius:8px;background:rgba(108,99,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--p)}
+.feat-ico svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.feat-name{font-size:12px;font-weight:600;margin-bottom:2px}
+.feat-desc{font-size:11px;color:var(--text2)}
+.btn-getpro{padding:13px 28px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;letter-spacing:-0.2px;transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.btn-getpro:hover{opacity:.86}
+.pro-key-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;margin-bottom:16px}
+.pro-key-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.pro-key-sub{font-size:12px;color:var(--text2);margin-bottom:14px}
+.pro-key-row{display:flex;gap:8px}
+.pro-key-input{flex:1;padding:10px 13px;border-radius:9px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:13px;font-family:'DM Mono',monospace;outline:none;transition:border-color var(--dur-fast) var(--ease-out)}
+.pro-key-input:focus{border-color:var(--p)}
+.btn-act{padding:10px 18px;border-radius:9px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:13px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.btn-act:hover{background:rgba(108,99,255,0.08)}
+.pro-unlocked{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--t);font-weight:600;padding:14px 0}
+.pro-unlocked svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5}
+.page-section{display:none}
+.page-section.active{display:block}
+.page-section.section-enter{animation:section-enter var(--dur-slow) var(--ease-out)}
+@keyframes section-enter{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── 3-way theme switch ── */
+.theme-switch{display:flex;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:2px;gap:1px;margin-top:14px}
+.ts-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;height:24px;padding:0 0 1px 0;border-radius:7px;border:none;background:transparent;color:var(--text3);font-size:10px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);user-select:none;line-height:1}
+.ts-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ts-btn:hover{color:var(--text2)}
+.ts-btn.active{background:var(--s1);color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,0.09)}
+
+/* ── How it works demos ── */
+
+.hsline{flex:1;min-width:8px;height:1px;background:var(--border);margin:0 4px}
+.hbrowser{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.htbar{background:var(--bg2);padding:4px 8px 0;display:flex;align-items:flex-end;gap:2px;border-bottom:1px solid var(--border);min-height:26px}
+.htab{height:20px;border-radius:4px 4px 0 0;border:1px solid transparent;border-bottom:none;padding:0 7px;display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text3);background:transparent;white-space:nowrap;transition:all .2s;opacity:0;transform:translateY(4px)}
+.htab.show{opacity:1;transform:translateY(0)}
+.htab.active{background:var(--s2);color:var(--text2);border-color:var(--border)}
+.htfav{width:9px;height:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.habar{background:var(--s1);padding:5px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border)}
+.hdots{display:flex;gap:4px}
+.hdots span{width:6px;height:6px;border-radius:50%;background:var(--border2);display:block}
+.hurl{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:19px;display:flex;align-items:center;font-size:9.5px;font-family:'DM Mono',monospace;overflow:hidden;white-space:nowrap;min-width:0;color:var(--text2)}
+.hcur{display:inline-block;width:1.5px;height:9px;background:var(--p);vertical-align:middle;animation:blink .8s step-end infinite}
+.hvp{overflow:hidden;height:130px;position:relative}
+.htrack{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.hslide{width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column}
+.hblank{display:flex;flex-direction:column;gap:7px;width:100%;height:100%;flex-shrink:0}
+.hcontent{overflow:hidden;display:flex;flex-direction:column;transition:opacity .3s;pointer-events:none}
+.how-spin{display:inline-block;width:8px;height:8px;border:1.5px solid var(--border2);border-top-color:var(--p);border-radius:50%;vertical-align:middle;margin-left:3px;animation:spin .65s linear infinite}
+/* slide header */
+.how-shdr{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.how-stitle{font-size:10px;font-weight:600;color:var(--text2)}
+.how-spill{margin-left:auto;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:9px;font-family:'DM Mono',monospace;color:var(--p);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.how-sbody{flex:1;overflow:hidden}
+/* chat */
+.how-chatp{padding:7px 10px}
+.how-bu{background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.18);border-radius:7px 7px 2px 7px;padding:4px 8px;font-size:10.5px;color:var(--text);display:inline-block;max-width:90%;margin-bottom:5px}
+.how-ba{background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.12);border-radius:2px 7px 7px 7px;padding:4px 8px;font-size:10px;color:var(--text2);line-height:1.5}
+.how-aicur{display:inline-block;width:1.5px;height:9px;background:var(--t);vertical-align:middle;animation:blink .8s step-end infinite}
+/* google */
+.how-googp{padding:6px 10px;display:flex;flex-direction:column;gap:5px}
+.how-gi{display:flex;flex-direction:column;gap:2px}
+.how-gurl{font-size:8.5px;color:var(--t);opacity:.6;font-family:'DM Mono',monospace}
+.how-gbar{height:6px;border-radius:2px;background:var(--border2)}
+.how-gsnip{height:5px;border-radius:2px;background:var(--border)}
+/* youtube */
+.how-ytp{padding:6px 9px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.how-ytc{display:flex;flex-direction:column;gap:2px}
+.how-ytth{aspect-ratio:16/9;border-radius:3px;position:relative;display:flex;align-items:center;justify-content:center}
+.how-ytpb{width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center}
+.how-ytpb svg{width:5px;height:5px;fill:rgba(255,255,255,0.7);margin-left:1px}
+.how-ytdur{position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.65);border-radius:2px;font-size:6.5px;color:#fff;padding:1px 2px;font-family:'DM Mono',monospace}
+.how-ytbl{height:5px;border-radius:2px;background:var(--border)}
+.how-ytbl.s{width:55%;background:rgba(108,99,255,0.1)}
+/* reddit */
+.how-redp{padding:6px 9px;display:flex;flex-direction:column;gap:4px}
+.how-rpost{display:flex;gap:5px;padding:4px 6px;background:var(--s2);border:1px solid var(--border);border-radius:4px}
+.how-rv{display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0}
+.how-aru{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-bottom:4px solid rgba(255,86,0,0.55)}
+.how-ard{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:4px solid var(--border2)}
+.how-rvc{font-size:7.5px;color:var(--text3);font-family:'DM Mono',monospace}
+.how-ri{flex:1;display:flex;flex-direction:column;gap:2px}
+.how-rbar{height:6px;border-radius:2px;background:var(--border2)}
+.how-rbar.s{width:55%;background:var(--border);height:5px}
+.how-rmeta{font-size:7.5px;color:var(--text3);font-family:'DM Mono',monospace}
+/* spotify */
+.how-spp{padding:6px 9px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.how-spc{display:flex;flex-direction:column;gap:3px}
+.how-spco{aspect-ratio:1;border-radius:3px}
+.how-spbl{height:5px;border-radius:2px;background:var(--border)}
+.how-spbl.s{width:58%;background:rgba(108,99,255,0.1)}
+.how-sppr{display:flex;justify-content:flex-end}
+.how-spbt{width:15px;height:15px;border-radius:50%;background:#1DB954;display:flex;align-items:center;justify-content:center}
+.how-spbt svg{width:6px;height:6px;fill:#000;margin-left:1px}
+/* amazon */
+.how-azp{padding:6px 9px;display:flex;flex-direction:column;gap:4px}
+.how-azc{display:flex;gap:6px;padding:4px 6px;background:var(--s2);border:1px solid var(--border);border-radius:4px}
+.how-azimg{width:28px;height:28px;border-radius:3px;flex-shrink:0}
+.how-azin{flex:1;display:flex;flex-direction:column;gap:2px}
+.how-azb{height:6px;border-radius:2px;background:var(--border2)}
+.how-azb.s{width:52%;background:var(--border)}
+.how-azpr{font-size:9px;font-weight:600;color:#ff9900}
+.how-azst{display:flex;gap:1px}
+.how-st{width:6px;height:6px;background:#ff9900;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.how-st.h{opacity:.22}
+/* bang placement examples */
+.how-expill{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;font-family:'DM Mono',monospace}
+.how-bang{color:var(--t);font-weight:600}
+.how-qt{color:var(--text2)}
+/* ── Requests page ── */
+.tab-bar{display:flex;gap:6px;margin-bottom:16px}
+.r-tab{padding:5px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--s2);color:var(--text2);transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);user-select:none}
+.r-tab.on{background:rgba(108,99,255,0.1);color:var(--p);border-color:rgba(108,99,255,0.2)}
+.req-item{display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid var(--border);gap:12px;transition:background-color var(--dur-mid) var(--ease-out)}
+.req-item:last-child{border-bottom:none}
+.req-item:hover{background:var(--s2)}
+.req-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700;color:#fff;font-family:'DM Mono',monospace}
+.req-info{flex:1;overflow:hidden}
+.req-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.req-meta{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+.req-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.req-type{font-size:9px;font-weight:700;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:20px}
+.req-type.ai{color:var(--p);background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.15)}
+.req-type.se{color:var(--t);background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.18)}
+.req-type.feature{color:var(--p2);background:rgba(108,99,255,0.05);border:1px solid var(--border)}
+.news-item{padding:18px;border-bottom:1px solid var(--border);transition:background-color var(--dur-mid) var(--ease-out),box-shadow var(--dur-slow) var(--ease-standard);cursor:default}
+.news-item:last-child{border-bottom:none}
+.news-item:hover{background:var(--s2)}
+.vote-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:38px;padding:5px 7px;border-radius:8px;border:1.5px solid var(--border2);background:var(--s2);color:var(--text2);cursor:pointer;transition:background-color var(--dur-mid) var(--ease-out),border-color var(--dur-mid) var(--ease-out),color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out);font-family:'DM Mono',monospace;user-select:none}
+.vote-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform var(--dur-fast) var(--ease-out)}
+.vote-btn .vote-count{font-size:11px;font-weight:700;line-height:1;color:var(--text)}
+.vote-btn:hover{border-color:var(--p);background:rgba(108,99,255,0.06);color:var(--p)}
+.vote-btn:hover svg{transform:translateY(-2px)}
+.vote-btn:hover .vote-count{color:var(--p)}
+.vote-btn.voted{border-color:var(--p);background:rgba(108,99,255,0.12);color:var(--p)}
+.vote-btn.voted svg{stroke:var(--p);transform:translateY(-1px)}
+.vote-btn.voted .vote-count{color:var(--p)}
+
+/* ── Segmented Toggle (The Slider) ── */
+.type-seg {
+  display: inline-flex;
+  height: 28px;
+  background: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 2px;
+  gap: 1px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.request-nudge {
+  padding: 12px 18px;
+  background: var(--s2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text2);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+/* The Sliding Background Pill */
+.type-pill {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 72px; /* Start at first button width */
+  height: 24px; /* Container height minus padding */
+  background: var(--s1);
+  border-radius: 7px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: left var(--dur-slow) var(--ease-standard), top var(--dur-slow) var(--ease-standard), width var(--dur-slow) var(--ease-standard), height var(--dur-slow) var(--ease-standard);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Toggle Buttons */
+.type-seg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px 1px;
+  min-width: 72px;
+  height: 24px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  user-select: none;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.type-seg-btn:hover { color: var(--text2); }
+.type-seg-btn.on { color: var(--p); }
+
+.req-form-wrap {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--s2);
+  border-radius: var(--r) var(--r) 0 0;
+}
+
+.req-form-title {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+}
+
+textarea.cf {
+  min-height: 60px;
+  resize: vertical;
+  line-height: 1.5;
+  padding-top: 12px;
+}
+
+.cf{padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:var(--s1);color:var(--text);font-size:12px;font-family:'Sora',sans-serif;outline:none;transition:border-color var(--dur-fast) var(--ease-out);width:100%}
+.cf:focus{border-color:var(--p)}
+
+.nudge-row{display:flex;align-items:flex-start;gap:8px;padding:11px 18px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);transition:background-color var(--dur-fast) var(--ease-out)}
+.nudge-row:last-child{border-radius:0 0 var(--r) var(--r)}
+.nudge-row:hover{background:var(--s2)}
+.nudge-row svg{width:13px;height:13px;stroke:var(--p);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:1px}
+
+/* ── Backup page ── */
+.backup-section{margin-bottom:14px}
+.backup-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;gap:12px}
+.backup-info{flex:1}
+.backup-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.backup-sub{font-size:11px;color:var(--text2);line-height:1.5}
+.backup-btn{padding:9px 16px;border-radius:9px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:12px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);flex-shrink:0}
+.backup-btn:hover{background:rgba(108,99,255,0.08)}
+.backup-btn.danger{color:var(--red);border-color:rgba(220,38,38,0.3)}
+.backup-btn.danger:hover{background:rgba(220,38,38,0.06)}
+.backup-divider{height:1px;background:var(--border);margin:0 18px}
+.backup-note{padding:10px 18px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.6}
+.how-badge{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;color:var(--t);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);padding:2px 8px;border-radius:20px;margin-bottom:8px}
+
+/* ── Conflict toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--s1);border:1px solid var(--red-bd);color:var(--red);font-size:12px;font-weight:500;padding:9px 16px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.18);opacity:0;pointer-events:none;transition:opacity var(--dur-mid) var(--ease-out),transform var(--dur-mid) var(--ease-out);white-space:nowrap;z-index:9999;display:flex;align-items:center;gap:7px}
+.toast svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── How it works ── */
+.how-num{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.1em;margin-bottom:5px}
+.how-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.how-sub{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+
+.how-tbar{background:var(--bg);padding:4px 8px 0;display:flex;align-items:flex-end;gap:2px;border-bottom:1px solid var(--border);min-height:26px}
+.htab{height:20px;border-radius:4px 4px 0 0;border:1px solid transparent;border-bottom:none;padding:0 7px;display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text3);background:transparent;white-space:nowrap;opacity:0;transform:translateY(4px);transition:all .2s;flex-shrink:0}
+.htab.show{opacity:1;transform:translateY(0)}
+.htab.active{background:var(--s2);color:var(--text2);border-color:var(--border)}
+.htfav{width:9px;height:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.how-abar{background:var(--s2);padding:5px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border)}
+.how-dots{display:flex;gap:4px}
+.how-dots span{width:6px;height:6px;border-radius:50%;background:var(--border2)}
+.how-upill{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:19px;display:flex;align-items:center;font-size:9.5px;font-family:'DM Mono',monospace;color:var(--text);overflow:hidden;white-space:nowrap;min-width:0}
+.how-cur{display:inline-block;width:1.5px;height:9px;background:var(--p);vertical-align:middle;animation:blink .8s step-end infinite}
+.how-spin{display:inline-block;width:8px;height:8px;border:1.5px solid var(--border2);border-top-color:var(--p);border-radius:50%;vertical-align:middle;margin-left:3px;animation:spin .65s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.how-vp{height:140px;position:relative;overflow:hidden}
+.how-slide{display:flex;flex-direction:column;overflow:hidden}
+.how-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.how-tslide{min-width:100%;height:100%;flex-shrink:0;overflow:hidden;display:flex;flex-direction:column}
+.skbar{height:7px;border-radius:3px;background:var(--border);margin-bottom:7px}
+/* how slide content */
+.how-shdr{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.how-stitle{font-size:10px;font-weight:600;color:var(--text2)}
+.how-spill{margin-left:auto;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:9px;font-family:'DM Mono',monospace;color:var(--p);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.how-sbody{flex:1;overflow:hidden}
+.how-chatp{padding:7px 10px}
+.how-bu{background:rgba(108,99,255,0.1);border-radius:7px 7px 2px 7px;padding:5px 8px;font-size:10px;color:var(--text);display:inline-block;max-width:90%;margin-bottom:5px}
+.how-ba{background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.12);border-radius:2px 7px 7px 7px;padding:5px 8px;font-size:10px;color:var(--text2);line-height:1.5}
+.how-aicur{display:inline-block;width:1.5px;height:9px;background:var(--t);vertical-align:middle;animation:blink .8s step-end infinite}
+.how-googp{padding:7px 10px;display:flex;flex-direction:column;gap:5px}
+.how-gi{display:flex;flex-direction:column;gap:2px}
+.how-gurl{font-size:8px;color:var(--t);opacity:.5;font-family:'DM Mono',monospace}
+.how-gbar{height:6px;border-radius:2px;background:var(--border2)}
+.how-gsnip{height:5px;border-radius:2px;background:var(--border)}
+.how-ytp{padding:6px 9px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.how-ytc{display:flex;flex-direction:column;gap:3px}
+.how-ytth{aspect-ratio:16/9;border-radius:3px;position:relative;display:flex;align-items:center;justify-content:center}
+.how-ytpb{width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center}
+.how-ytdur{position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.6);border-radius:2px;font-size:6.5px;color:#fff;padding:1px 2px;font-family:monospace}
+.how-ytbl{height:5px;border-radius:2px;background:var(--border2)}
+.how-ytbl.s{width:55%;background:var(--border)}
+.how-redp{padding:6px 9px;display:flex;flex-direction:column;gap:4px}
+.how-rpost{display:flex;gap:6px;padding:4px 6px;background:var(--s2);border:1px solid var(--border);border-radius:4px}
+.how-rv{display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0}
+.how-aru{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-bottom:4px solid rgba(255,86,0,0.55)}
+.how-ard{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:4px solid var(--border2)}
+.how-rvc{font-size:7px;color:var(--text3);font-family:monospace}
+.how-ri{flex:1;display:flex;flex-direction:column;gap:2px}
+.how-rbar{height:6px;border-radius:2px;background:var(--border2)}
+.how-rbar.s{width:55%;background:var(--border);height:5px}
+.how-rmeta{font-size:7px;color:var(--text3);font-family:monospace}
+.how-spp{padding:6px 9px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.how-spc{display:flex;flex-direction:column;gap:3px}
+.how-spco{aspect-ratio:1;border-radius:3px}
+.how-spbl{height:5px;border-radius:2px;background:var(--border2)}
+.how-spbl.s{width:58%;background:var(--border)}
+.how-azp{padding:6px 9px;display:flex;flex-direction:column;gap:4px}
+.how-azc{display:flex;gap:6px;padding:4px 6px;background:var(--s2);border:1px solid var(--border);border-radius:4px}
+.how-azimg{width:28px;height:28px;border-radius:3px;flex-shrink:0}
+.how-azin{flex:1;display:flex;flex-direction:column;gap:2px}
+.how-azb{height:6px;border-radius:2px;background:var(--border2)}
+.how-azb.s{width:52%;background:var(--border)}
+.how-azpr{font-size:9px;font-weight:600;color:#ff9900}
+.how-azst{display:flex;gap:1px}
+.how-st{width:6px;height:6px;background:#ff9900;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.how-st.h{opacity:.22}
+.how-ghp{padding:6px 9px;display:flex;flex-direction:column;gap:4px}
+/* bang placement section */
+.bang-place-grid{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.bp-card{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.bp-label{font-size:9px;font-family:'DM Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.bp-pill{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:11px;font-family:'DM Mono',monospace;white-space:nowrap}
+.bp-bang{color:var(--t);font-weight:700}
+.bp-text{color:var(--text2)}
+.bp-note{font-size:11px;color:var(--text3);line-height:1.6}
+
+/* ══ How it works — card layout ══ */
+.hw-wrap{display:flex;flex-direction:column;align-items:stretch;gap:20px;padding:8px 0 16px}
+/* each section IS the card */
+.hw-sec{width:100%;background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden;flex-shrink:0;transition:box-shadow var(--dur-slow) var(--ease-standard),border-color var(--dur-slow) var(--ease-standard)}
+.hw-sec:hover{border-color:var(--border2);box-shadow:var(--glow,0 0 0 1px rgba(108,99,255,0.08),0 2px 10px rgba(108,99,255,0.05))}
+/* text head area */
+.hw-head{padding:18px 18px 14px}
+.hw-num{font-size:10px;font-family:'DM Mono',monospace;color:var(--p);opacity:.45;letter-spacing:.12em;margin-bottom:5px}
+.hw-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:4px}
+.hw-sub{font-size:12px;color:var(--text2);line-height:1.6;margin:0}
+/* divider between sections becomes a visual gap — no separate element needed */
+.hw-divider{display:none}
+/* steps bar — full-width, flush edges */
+.hw-steps{display:flex;align-items:center;justify-content:center;padding:9px 12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--s2);gap:0;flex-shrink:0}
+.hw-step{display:flex;align-items:center;opacity:.25;transition:opacity .3s}
+.hw-step.on{opacity:1}
+.hw-si{display:flex;align-items:center;gap:4px}
+.hw-sn{width:16px;height:16px;border-radius:50%;border:1px solid var(--border2);font-size:8px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;color:var(--text3);font-weight:600;flex-shrink:0}
+.hw-step.on .hw-sn{background:var(--p);color:#fff;border-color:var(--p)}
+.hw-sl{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap}
+.hw-step.on .hw-sl{color:var(--text2)}
+.hw-sline{flex:1;min-width:8px;height:1px;background:var(--border);margin:0 4px}
+/* browser area — no extra box, no border */
+.hw-browser{background:var(--bg);overflow:hidden}
+.hw-tbar{background:var(--s1);padding:3px 6px 0;display:flex;align-items:flex-end;gap:2px;flex-shrink:0;border-bottom:1px solid var(--border);min-height:24px;overflow:hidden}
+.hw-tab{height:19px;border-radius:3px 3px 0 0;border:1px solid transparent;border-bottom:none;padding:0 6px;display:flex;align-items:center;gap:3px;font-size:8.5px;color:var(--text3);background:transparent;white-space:nowrap;transition:all .2s;flex-shrink:0;opacity:0;transform:translateY(4px)}
+.hw-tab.show{opacity:1;transform:translateY(0)}
+.hw-tab.active{background:var(--s2);color:var(--text2);border-color:var(--border2)}
+.hw-tfav{width:9px;height:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.hw-abar{background:var(--s2);padding:5px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);flex-shrink:0}
+.hw-dots{display:flex;gap:4px}
+.hw-dots span{width:6px;height:6px;border-radius:50%;background:var(--border2);display:block}
+.hw-upill{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:20px;display:flex;align-items:center;font-size:9.5px;font-family:'DM Mono',monospace;overflow:hidden;white-space:nowrap;min-width:0;color:var(--text2)}
+.hw-un{color:var(--text3)}.hw-ub{color:var(--t);font-weight:700}.hw-ue{color:var(--text);font-size:8.5px}
+.hw-cur{display:inline-block;width:1.5px;height:9px;background:var(--p);vertical-align:middle;animation:blink .8s step-end infinite}
+.hw-spin{display:inline-block;width:8px;height:8px;border:1.5px solid var(--border2);border-top-color:var(--p);border-radius:50%;vertical-align:middle;margin-left:3px;animation:spin .65s linear infinite}
+.hw-vp{height:175px;overflow:hidden;position:relative;background:var(--bg)}
+.hw-vp.tall{height:215px}
+.hw-track{display:flex;height:100%}
+.hw-slide{width:100%;height:100%;flex-shrink:0;overflow:hidden;display:flex;flex-direction:column}
+.hw-blank{position:absolute;inset:0;padding:12px;display:flex;flex-direction:column;gap:7px;background:var(--bg)}
+.hw-content{position:absolute;inset:0;opacity:0;display:flex;flex-direction:column;overflow:hidden;pointer-events:none;background:var(--bg)}
+.hbp{height:7px;border-radius:2px;background:var(--border);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+/* bang placement section */
+.hw-pills{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:0 18px 18px}
+.hw-pill-card{display:flex;flex-direction:column;align-items:center;gap:6px}
+.hw-pill-label{font-size:9px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.hw-expill{background:var(--s2);border:1px solid var(--border2);border-radius:7px;padding:7px 12px;font-size:11px;font-family:'DM Mono',monospace;white-space:nowrap}
+.hw-bang{color:var(--t);font-weight:700}
+.hw-qt{color:var(--text2)}
+.hw-note{font-size:11px;color:var(--text3);line-height:1.6;margin-top:2px;padding:0 18px 18px}
+.hw-note-code{color:var(--text2);background:var(--s2);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace}
+@media (hover:hover){
+  .sync-btn:hover,.show-all-btn:hover,.inact-btn:hover,.add-btn:hover,.btn-act:hover,.btn-getpro:hover,.backup-btn:hover{transform:translateY(-1px)}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation:none !important;
+    transition-duration:1ms !important;
+    transition-delay:0ms !important;
+  }
+  .page-section.section-enter,.site-row.enter{
+    animation:none !important;
+  }
+  .site-row.exit{
+    opacity:1;
+    transform:none;
+  }
+  html.theme-ready,html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{
+    transition:none !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="sb-top">
+      <div class="sb-logo">
+        <img src="../icons/icon128.png" width="28" height="28" style="flex-shrink:0" alt="Logo" />
+        <span class="sb-logo-wordmark"><span class="logo-bang">Sling</span><span class="logo-ify">shot</span><span class="logo-mark"></span></span>
+      </div>
+      <div class="theme-switch">
+        <button class="ts-btn active" data-mode="light" id="ts-light">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          Light
+        </button>
+        <button class="ts-btn" data-mode="auto" id="ts-auto">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor" stroke="none"/></svg>
+          Auto
+        </button>
+        <button class="ts-btn" data-mode="dark" id="ts-dark">
+          <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Dark
+        </button>
+      </div>
+    </div>
+    <div class="sb-nav">
+      <div class="nav-section">
+        <div class="nav-label">Configure</div>
+        <div class="nav-item active" data-page="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Search Engines
+          <span class="badge" id="srCount">2</span>
+        </div>
+        <div class="nav-item" data-page="ai">
+          <svg viewBox="0 0 24 24"><path d="M12 2L13.09 8.26L19 6L14.74 10.74L21 12L14.74 13.26L19 18L13.09 15.74L12 22L10.91 15.74L5 18L9.26 13.26L3 12L9.26 10.74L5 6L10.91 8.26L12 2Z" fill="currentColor" stroke="none"/></svg>
+          AI Prompter
+          <span class="badge" id="aiCount">2</span>
+        </div>
+        <div class="nav-item" data-page="bang">
+          <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+          Shortcuts
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Learn</div>
+        <div class="nav-item" data-page="how">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01" stroke-linecap="round"/></svg>
+          How it works
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Community</div>
+        <div class="nav-item" data-page="news">
+          <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+          News
+        </div>
+        <div class="nav-item" data-page="requests">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Requests
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Account</div>
+        <div class="nav-item" data-page="pro" id="navProPlan" style="display:none">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" stroke="none"/></svg>
+          Pro Plan
+        </div>
+        <div class="nav-item" data-page="backup">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Backup
+        </div>
+        <div class="nav-item admin-nav-item" data-page="admin" style="display:none;margin-top:6px;opacity:0.6;border:1px dashed var(--border)">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          ⚙ Admin
+        </div>
+      </div>
+    </div>
+    <div class="sb-bottom">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 4px 8px">
+        <span style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">v0.4.0</span>
+        <span style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">slingshot</span>
+      </div>
+      <div class="storage-bar-wrap">
+        <div class="storage-bar-label">
+          <span>Local storage</span>
+          <span id="storageUsedLabel">...</span>
+        </div>
+        <div class="storage-bar-track">
+          <div class="storage-bar-fill" id="storageBarFill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="plan-chip" id="planChip" style="display:none">
+        <span class="plan-name">Current plan</span>
+        <span class="plan-tag" id="planTag">Free</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="main-inner">
+
+      <div class="page-section" id="page-ai">
+        <div class="pg-header">
+          <div class="pg-title">AI Prompter</div>
+          <div class="pg-sub">Toggle AI sites on or off. Use <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px" id="aiAllCode">!ai</code> to fire all active sites at once.</div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Active AI sites</span>
+            <span class="fire-pill" id="aiFire">!ai → fires all</span>
+          </div>
+          <div id="aiRows"></div>
+          <div class="inactive-wrap">
+            <div class="inactive-lbl">Click to activate</div>
+            <div class="inactive-grid-container" id="aiInactiveContainer">
+              <div class="inactive-grid" id="aiInactive"></div>
+            </div>
+          </div>
+          <div class="nudge-row" data-goto="requests" style="cursor:pointer">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Don't see the AI you want? <strong>Request it →</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-section active" id="page-search">
+        <div class="pg-header">
+          <div class="pg-title" style="display:flex;align-items:center;gap:8px">Search Engines
+            <button class="sync-btn" id="syncBtn" title="Sync from server">
+              <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+            </button>
+          </div>
+          <div class="pg-sub">Toggle engines on or off. Use <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px" id="srAllCode">!all</code> to fire all active engines, or <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px">!gen</code> <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px">!dev</code> <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px">!des</code> <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px">!res</code> by category.</div>
+          <div style="margin-top:10px;display:flex;justify-content:center">
+            <div class="type-seg" id="srCatSeg">
+              <div class="type-pill"></div>
+              <button class="type-seg-btn on" data-val="all">All</button>
+              <button class="type-seg-btn" data-val="general">General</button>
+              <button class="type-seg-btn" data-val="dev">Dev</button>
+              <button class="type-seg-btn" data-val="design">Design</button>
+              <button class="type-seg-btn" data-val="research">Research</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Active engines</span>
+            <span class="fire-pill" id="srFire">!all → fires all</span>
+          </div>
+          <div id="srRows"></div>
+          <div class="inactive-wrap">
+            <div class="inactive-lbl">Click to activate</div>
+            <div class="inactive-grid-container" id="srInactiveContainer">
+              <div class="inactive-grid" id="srInactive"></div>
+            </div>
+          </div>
+          <div class="request-nudge" data-goto="requests">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Don't see the engine you want? <strong>Request it →</strong>
+          </div>
+          <div class="custom-wrap">
+            <div class="custom-title" style="display:flex;align-items:center;gap:8px;">
+              <span>Custom search engine</span>
+              <button class="add-btn" id="srAutoFillBtn" style="height:24px;padding:0 9px;font-size:11px;margin-left:6px;">Auto fill</button>
+              <div class="warn-icon" style="margin-left:4px;">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span class="warn-tip">First, search for anything on the website you want to add, then click Auto fill. Slingshot turns the results page into a template you can edit before adding. It will not always work.</span>
+              </div>
+            </div>
+            <div class="custom-grid">
+              <input type="text" class="cf" id="srName" placeholder="Name" />
+              <div class="bang-w"><span class="bang-sym" id="srBangSym">!</span><input type="text" class="cf mono" id="srBang" placeholder="shortcut" /></div>
+              <input type="text" class="cf mono" id="srUrl" placeholder="https://example.com/search?q=%s" />
+              <button class="add-btn" id="srAddBtn">+ Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-section" id="page-bang">
+        <div class="pg-header">
+          <div class="pg-title">Shortcuts</div>
+          <div class="pg-sub">Set the trigger character and your keyboard shortcut to open Slingshot.</div>
+        </div>
+        <div class="card">
+          <div class="char-grid" id="charGrid">
+            <button class="char-btn on" data-char="!">!</button>
+            <button class="char-btn" data-char="@">@</button>
+            <button class="char-btn" data-char="#">#</button>
+            <button class="char-btn" data-char="$">$</button>
+          </div>
+          <div class="char-hint">Current: type <code id="charExample">!ai</code> or <code id="charExample2">!yt</code> in the address bar after <code>bg</code> + space.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="card-header">
+            <span class="card-title">Keyboard shortcut</span>
+            <span class="fire-pill" id="kbShortcutPill">Alt+Shift+B</span>
+          </div>
+          <div style="padding:14px 18px">
+            <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
+              Press this shortcut anywhere to open the Slingshot cheatsheet popup. To change it, use Chrome's built-in shortcut manager.
+            </div>
+            <a id="chromeShortcutLink" href="#" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--p);text-decoration:none">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Manage in chrome://extensions/shortcuts
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-section" id="page-how">
+        <div class="pg-header" style="padding: 32px 18px 0;"><div class="pg-title">How it works</div><div class="pg-sub">Type a shortcut, get slung to the right place instantly. Here's everything you can do with Slingshot.</div></div>
+        <div class="hw-wrap">
+
+        <!-- 01 -->
+        <div class="hw-sec">
+          <div class="hw-head">
+            <div class="hw-num">01</div>
+            <div class="hw-title">AI prompt from the address bar</div>
+            <div class="hw-sub">Type your query, add a shortcut like !cl, hit enter. The AI opens with your prompt already sent.</div>
+          </div>
+          <div class="hw-steps">
+            <div class="hw-step on" id="h1_0"><div class="hw-si"><div class="hw-sn">1</div><span class="hw-sl">type query</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h1_1"><div class="hw-si"><div class="hw-sn">2</div><span class="hw-sl">add shortcut</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h1_2"><div class="hw-si"><div class="hw-sn">3</div><span class="hw-sl">loading</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h1_3"><div class="hw-si"><div class="hw-sn">4</div><span class="hw-sl">AI opens</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h1_4"><div class="hw-si"><div class="hw-sn">5</div><span class="hw-sl">sent</span></div></div>
+          </div>
+          <div class="hw-browser">
+            <div class="hw-abar"><div class="hw-dots"><span></span><span></span><span></span></div><div class="hw-upill"><span id="h1u"></span><span class="hw-cur" id="h1cur"></span></div></div>
+            <div class="hw-vp">
+              <div class="hw-blank" id="h1blank"><div class="hbp" style="width:70%"></div><div class="hbp" style="width:50%"></div><div class="hbp" style="width:82%"></div><div class="hbp" style="width:40%"></div></div>
+              <div class="hw-content" id="h1chat"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 02 -->
+        <div class="hw-sec">
+          <div class="hw-head">
+            <div class="hw-num">02</div>
+            <div class="hw-title">Search anywhere instantly</div>
+            <div class="hw-sub">Use !yt, !sp, !az, !r to jump straight to results on any platform.</div>
+          </div>
+          <div class="hw-steps">
+            <div class="hw-step on" id="h2_0"><div class="hw-si"><div class="hw-sn">1</div><span class="hw-sl">type query</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h2_1"><div class="hw-si"><div class="hw-sn">2</div><span class="hw-sl">add shortcut</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h2_2"><div class="hw-si"><div class="hw-sn">3</div><span class="hw-sl">loading</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h2_3"><div class="hw-si"><div class="hw-sn">4</div><span class="hw-sl">results</span></div></div>
+          </div>
+          <div class="hw-browser">
+            <div class="hw-abar"><div class="hw-dots"><span></span><span></span><span></span></div><div class="hw-upill"><span id="h2u"></span><span class="hw-cur" id="h2cur"></span></div></div>
+            <div class="hw-vp">
+              <div class="hw-blank" id="h2blank"><div class="hbp" style="width:70%"></div><div class="hbp" style="width:50%"></div><div class="hbp" style="width:82%"></div><div class="hbp" style="width:40%"></div></div>
+              <div class="hw-content" id="h2res"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 03 -->
+        <div class="hw-sec">
+          <div class="hw-head">
+            <div class="hw-num">03</div>
+            <div class="hw-title">One query, multiple tabs</div>
+            <div class="hw-sub">Stack shortcuts like !cl !gg !yt and all tabs open at once. Fly between results.</div>
+          </div>
+          <div class="hw-steps">
+            <div class="hw-step on" id="h3_0"><div class="hw-si"><div class="hw-sn">1</div><span class="hw-sl">type</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h3_1"><div class="hw-si"><div class="hw-sn">2</div><span class="hw-sl">add shortcuts</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h3_2"><div class="hw-si"><div class="hw-sn">3</div><span class="hw-sl">tabs open</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h3_3"><div class="hw-si"><div class="hw-sn">4</div><span class="hw-sl">fly between</span></div></div>
+          </div>
+          <div class="hw-browser">
+            <div class="hw-tbar" id="h3tbar">
+              <div class="hw-tab show active" id="h3t0"><div class="hw-tfav" id="h3f0"></div><span id="h3l0">New Tab</span></div>
+              <div class="hw-tab" id="h3t1"><div class="hw-tfav" id="h3f1"></div><span id="h3l1"></span></div>
+              <div class="hw-tab" id="h3t2"><div class="hw-tfav" id="h3f2"></div><span id="h3l2"></span></div>
+              <div class="hw-tab" id="h3t3"><div class="hw-tfav" id="h3f3"></div><span id="h3l3"></span></div>
+            </div>
+            <div class="hw-abar"><div class="hw-dots"><span></span><span></span><span></span></div><div class="hw-upill"><span id="h3u"></span><span class="hw-cur" id="h3cur"></span></div></div>
+            <div class="hw-vp tall">
+              <div class="hw-track" id="h3track">
+                <div class="hw-slide" id="h3blank" style="padding:10px"><div class="hbp" style="width:70%"></div><div class="hbp" style="width:50%"></div><div class="hbp" style="width:80%"></div><div class="hbp" style="width:38%"></div></div>
+                <div class="hw-slide" id="h3s1"></div>
+                <div class="hw-slide" id="h3s2"></div>
+                <div class="hw-slide" id="h3s3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 04 -->
+        <div class="hw-sec">
+          <div class="hw-head">
+            <div class="hw-num">04</div>
+            <div class="hw-title">Shortcuts go anywhere in your query</div>
+            <div class="hw-sub" style="margin-bottom:14px">Put the shortcut at the start, middle, or end. All three work the same way.</div>
+          </div>
+          <div class="hw-pills">
+            <div class="hw-pill-card">
+              <div class="hw-pill-label">start</div>
+              <div class="hw-expill"><span class="hw-bang">!cl</span><span class="hw-qt"> best pizza in warsaw</span></div>
+            </div>
+            <div class="hw-pill-card">
+              <div class="hw-pill-label">middle</div>
+              <div class="hw-expill"><span class="hw-qt">best pizza </span><span class="hw-bang">!cl</span><span class="hw-qt"> in warsaw</span></div>
+            </div>
+            <div class="hw-pill-card">
+              <div class="hw-pill-label">end</div>
+              <div class="hw-expill"><span class="hw-qt">best pizza in warsaw </span><span class="hw-bang">!cl</span></div>
+            </div>
+          </div>
+          <div class="hw-note">The query sent is always <span class="hw-note-code">best pizza in warsaw</span> regardless of where the shortcut sits.</div>
+        </div>
+
+        <!-- 05 -->
+        <div class="hw-sec">
+          <div class="hw-head">
+            <div class="hw-num">05</div>
+            <div class="hw-title">Make a shortcut for any platform</div>
+            <div class="hw-sub">Search a platform, copy the URL, swap your query for <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--t);background:rgba(5,122,82,0.08);padding:1px 4px;border-radius:3px">%s</code>. Instant shortcut to anything you search regularly.</div>
+          </div>
+          <div class="hw-steps">
+            <div class="hw-step on" id="h5_0"><div class="hw-si"><div class="hw-sn">1</div><span class="hw-sl">search it</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h5_1"><div class="hw-si"><div class="hw-sn">2</div><span class="hw-sl">copy URL</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h5_2"><div class="hw-si"><div class="hw-sn">3</div><span class="hw-sl">paste &amp; %s</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h5_3"><div class="hw-si"><div class="hw-sn">4</div><span class="hw-sl">use shortcut</span></div></div><div class="hw-sline"></div>
+            <div class="hw-step" id="h5_4"><div class="hw-si"><div class="hw-sn">5</div><span class="hw-sl">results</span></div></div>
+          </div>
+          <div class="hw-browser">
+            <div class="hw-abar"><div class="hw-dots"><span></span><span></span><span></span></div><div class="hw-upill"><span id="h5u"></span><span class="hw-cur" id="h5cur"></span></div></div>
+            <div class="hw-vp tall">
+              <div class="hw-blank" id="h5blank"><div class="hbp" style="width:70%"></div><div class="hbp" style="width:50%"></div><div class="hbp" style="width:82%"></div><div class="hbp" style="width:40%"></div></div>
+              <div class="hw-content" id="h5slideA"></div>
+              <div class="hw-content" id="h5slideB"></div>
+              <div class="hw-content" id="h5slideC"></div>
+            </div>
+          </div>
+        </div>
+
+        </div>
+      </div>
+
+      <div class="page-section" id="page-pro">
+        <div class="pg-header">
+          <div class="pg-title">Pro Plan</div>
+          <div class="pg-sub">Unlock the full power of Slingshot.</div>
+        </div>
+        <div class="pro-hero" id="proHero">
+          <div class="pro-hero-icon">⚡</div>
+          <div class="pro-hero-title">Slingshot Pro</div>
+          <div class="pro-hero-sub">Everything in Free, plus unlimited sites, custom entries and priority support. One payment.</div>
+          <div class="pro-features">
+            <div class="pro-feat">
+              <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/></svg></div>
+              <div><div class="feat-name">Unlimited AI sites</div><div class="feat-desc">No 2-site cap on any section</div></div>
+            </div>
+            <div class="pro-feat">
+              <div class="feat-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+              <div><div class="feat-name">Unlimited search engines</div><div class="feat-desc">Add as many as you need</div></div>
+            </div>
+            <div class="pro-feat">
+              <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+              <div><div class="feat-name">Custom sites</div><div class="feat-desc">Add any URL with %s query</div></div>
+            </div>
+            <div class="pro-feat">
+              <div class="feat-ico"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" stroke="none"/></svg></div>
+              <div><div class="feat-name">Early access</div><div class="feat-desc">New features before everyone</div></div>
+            </div>
+          </div>
+          <a href="https://gumroad.com" target="_blank"><button class="btn-getpro">Get Pro</button></a>
+        </div>
+        <div class="pro-key-card" id="proKeyCard">
+          <div id="proKeyHeader">
+            <div class="pro-key-title">Already have a license?</div>
+            <div class="pro-key-sub">Enter your key below to unlock Pro features instantly.</div>
+          </div>
+          <div id="proKeySection">
+            <div class="pro-key-row">
+              <input type="text" class="pro-key-input" id="licenseInput" placeholder="XXXX-XXXX-XXXX-XXXX" />
+              <button class="btn-act" id="activateBtn">Activate</button>
+            </div>
+          </div>
+          <div class="pro-unlocked" id="proUnlocked" style="display:none">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Pro license active
+          </div>
+        </div>
+      </div>
+
+      <!-- Requests -->
+      <div class="page-section" id="page-requests">
+        <div class="pg-header">
+          <div class="pg-title" style="display:flex;align-items:center;gap:8px">Requests
+            <button class="sync-btn" id="reqSyncBtn" title="Refresh requests">
+              <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+            </button>
+          </div>
+          <div class="pg-sub">Vote for sites you want added. Most-voted get built into Slingshot.</div>
+        </div>
+        <div class="card">
+          <div class="req-form-wrap">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px">
+              <div class="req-form-title" style="white-space:nowrap">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Submit a request
+              </div>
+              <div style="flex:1"></div>
+              <div class="type-seg" id="typeSeg">
+                <div class="type-pill"></div>
+                <button class="type-seg-btn on" data-val="ai">AI Site</button>
+                <button class="type-seg-btn" data-val="se">Search</button>
+                <button class="type-seg-btn" data-val="feature">Feature</button>
+              </div>
+              <div style="flex:1"></div>
+              <button class="add-btn" id="reqSubmitBtn" style="height:28px; line-height:1; display:flex; align-items:center; padding:0 14px">+ Submit Request</button>
+            </div>
+
+            <div class="req-form-row" id="rowMain" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+              <input type="text" class="cf" id="reqName" placeholder="Name (e.g. Perplexity AI)" />
+              <input type="text" class="cf" id="reqUrl" placeholder="Website URL (https://...)" />
+            </div>
+            <div class="req-form-row desc" id="reqDescRow" style="display:none; margin-bottom: 8px;">
+              <textarea class="cf" id="reqDesc" placeholder="Briefly describe the feature..."></textarea>
+            </div>
+          </div>
+          <div class="card-header" style="border-radius:0">
+            <span class="card-title">Top requests</span>
+            <span style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">sorted by votes</span>
+          </div>
+          <div id="reqList">
+            <!-- Dynamic list inserted via settings.js -->
+            <div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:'DM Mono',monospace" id="reqLoading">
+              loading requests<span class="how-spin"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- News -->
+      <div class="page-section" id="page-news">
+        <div class="pg-header">
+          <div class="pg-title" style="display:flex;align-items:center;gap:8px">News & Updates
+            <button class="sync-btn" id="newsSyncBtn" title="Refresh news">
+              <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+            </button>
+          </div>
+          <div class="pg-sub">Latest announcements and upcoming features from the developer.</div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Billboard</span>
+          </div>
+          <div id="newsList">
+            <div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:'DM Mono',monospace" id="newsLoading">
+              loading news<span class="how-spin"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backup -->
+      <div class="page-section" id="page-backup">
+        <div class="pg-header">
+          <div class="pg-title">Backup</div>
+          <div class="pg-sub">Export your settings as a JSON file or import a previous backup. Works offline, no account needed.</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Export</span></div>
+          <div class="backup-row">
+            <div class="backup-info">
+              <div class="backup-label">Download backup</div>
+              <div class="backup-sub">Saves all your active sites, custom shortcuts, trigger character, and Pro license key to a .json file on your device.</div>
+            </div>
+            <button class="backup-btn" id="exportBtn">↓ Export</button>
+          </div>
+          <div class="backup-note">Last export: <span id="lastExport">never</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Import</span></div>
+          <div class="backup-row">
+            <div class="backup-info">
+              <div class="backup-label">Restore from file</div>
+              <div class="backup-sub">Load a previously exported slingshot_backup.json. This will overwrite your current settings.</div>
+            </div>
+            <button class="backup-btn" id="importBtn">↑ Import</button>
+            <input type="file" id="importFile" accept=".json" style="display:none" />
+          </div>
+          <div class="backup-divider"></div>
+          <div class="backup-row" style="padding-top:12px;padding-bottom:12px">
+            <div class="backup-info">
+              <div class="backup-label" style="color:var(--red)">Reset to defaults</div>
+              <div class="backup-sub">Removes all custom sites and resets everything back to factory defaults.</div>
+            </div>
+            <button class="backup-btn danger" id="resetBtn">Reset</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">How to sync across devices for free</span></div>
+          <div style="padding:14px 18px;font-size:13px;color:var(--text2);line-height:1.7">
+            <div class="how-badge">no account needed</div>
+            <p style="margin-bottom:10px">Chrome syncs <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 5px;border-radius:4px;font-size:11px">chrome.storage.sync</code> automatically when you are signed in, so your settings follow you across installs for free.</p>
+            <p>If you use multiple browsers or want a manual copy, export above and drop the file in Google Drive, iCloud, or any folder you already sync.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="page-section" id="page-admin" style="display:none">
+  <div class="pg-header">
+    <div class="pg-title">⚙ Admin Panel</div>
+    <div class="pg-sub">Internal testing tools. Double-click the logo to reveal.</div>
+  </div>
+  <div class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px">
+
+    <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Storage Reset</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <button class="add-btn" id="admin-wipe-all" style="color:var(--red);border-color:rgba(220,38,38,0.3)">💥 Wipe Everything (Fresh Install)</button>
+      <button class="add-btn" id="admin-dump">📦 Dump Storage to Console</button>
+      <pre id="admin-storage-out" style="font-size:10px;font-family:'DM Mono',monospace;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px;overflow:auto;max-height:240px;display:none;white-space:pre-wrap"></pre>
+    </div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:8px">Subscription 3-State Simulation</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <button class="add-btn" id="admin-state1">🟢 State 1: 30-Day Free Trial</button>
+      <button class="add-btn" id="admin-state2">🔴 State 2: Free Tier (Expired)</button>
+      <button class="add-btn" id="admin-state3">✦ State 3: Pro Unlocked</button>
+    </div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:8px">Plan Enforcement</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <button class="add-btn" id="admin-enforce">🔒 Force Enforce Limits + Re-render</button>
+      <button class="add-btn" id="admin-reload">🔄 Reload Options Page</button>
+      <button class="add-btn" id="admin-force-sync">☁️ Force Daily Sync</button>
+    </div>
+
+
+
+    <div style="font-size:11px;color:var(--text3);margin-top:4px">Current plan state: <code id="admin-plan-state" style="font-family:'DM Mono',monospace;background:var(--s2);padding:2px 6px;border-radius:4px">loading…</code></div>
+  </div>
+</div>
+<script src="../storage.js"></script>
+<script src="settings.js"></script>
+
+<div class="toast" id="bangToast">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <span id="bangToastMsg"></span>
+</div>
+</body>
+</html>

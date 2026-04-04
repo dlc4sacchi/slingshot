@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#edeaff; --bg2:#ffffff; --bg3:#f0eeff;
+  --border:rgba(108,99,255,0.15); --border2:rgba(108,99,255,0.3);
+  --text:#110f2a; --text2:#4a4768; --text3:#8a87a8;
+  --purple:#5548e8; --teal:#057a52;
+  --grad:linear-gradient(135deg,#6c63ff 0%,#34d399 100%);
+  --dur-fast:120ms; --dur-mid:180ms; --dur-slow:260ms;
+  --ease-out:ease-out; --ease-standard:cubic-bezier(0.2,0,0,1);
+}
+html.dark{
+  --bg:#08070f; --bg2:#0e0d1a; --bg3:#131224;
+  --border:rgba(108,99,255,0.11); --border2:rgba(108,99,255,0.24);
+  --text:#f0eeff; --text2:rgba(240,238,255,0.52); --text3:rgba(240,238,255,0.26);
+  --purple:#8b84ff; --teal:#34d399;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:300px;background:var(--bg);color:var(--text);font-family:'Sora',system-ui,sans-serif;padding:12px}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+
+.logo-bang-p{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;letter-spacing:-0.8px;color:var(--text)}
+.logo-ify-p{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;letter-spacing:-0.8px;color:var(--text3)}
+.logo-dot-p{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--purple);margin-left:2px;margin-bottom:1px;vertical-align:bottom}
+.logo-row{display:flex;align-items:center;gap:7px}
+.logo-wordmark{display:inline-flex;align-items:baseline;line-height:1}
+.logo-icon{width:24px;height:24px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;font-family:'Bricolage Grotesque',system-ui,sans-serif}
+.logo-text{font-size:14px;font-weight:800;font-family:'Bricolage Grotesque',system-ui,sans-serif;background:linear-gradient(90deg,#7F77DD,#5DCAA5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-actions{display:flex;align-items:center;gap:5px}
+.icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color var(--dur-mid) var(--ease-out),color var(--dur-mid) var(--ease-out),border-color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.icon-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.icon-btn:active{transform:translateY(1px)}
+.icon-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Section label */
+.section-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;font-family:'DM Mono',monospace}
+
+/* Cheatsheet grid — 2 columns */
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:8px}
+.cheat-item{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:5px;background:var(--bg2);border:1px solid var(--border);cursor:default;min-width:0}
+.cheat-icon{width:14px;height:14px;border-radius:3px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px var(--border)}
+.cheat-icon img{width:14px;height:14px;object-fit:cover;display:block;border-radius:3px}
+.cheat-name{font-size:11px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cheat-bang{font-size:10px;color:var(--purple);font-family:'DM Mono',monospace;flex-shrink:0}
+.empty-msg{font-size:11px;color:var(--text3);padding:4px 0;grid-column:1/-1}
+
+/* Divider */
+.divider{height:1px;background:var(--border);margin:6px 0}
+
+/* Footer shortcut hint */
+.footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:7px;border-top:1px solid var(--border)}
+.shortcut-hint{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px}
+.kbd{display:inline-flex;align-items:center;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-size:9px;font-family:'DM Mono',monospace;color:var(--text2)}
+/* ── Theme transition ── */
+html.theme-ready{transition:background-color var(--dur-slow) var(--ease-out)}
+html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out),border-color var(--dur-slow) var(--ease-out)}
+.footer-actions{display:flex;gap:4px}
+@media (hover:hover){
+  .icon-btn:hover{transform:translateY(-1px)}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation:none !important;
+    transition-duration:1ms !important;
+    transition-delay:0ms !important;
+  }
+  html.theme-ready,html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{
+    transition:none !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo-row">
+    <img src="../icons/icon128.png" width="20" height="20" style="flex-shrink:0" alt="Logo" /><span class="logo-wordmark"><span class="logo-bang-p">Sling</span><span class="logo-ify-p">shot</span><span class="logo-dot-p"></span></span>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" id="bugBtn" title="Report a bug">
+      <svg viewBox="0 0 24 24"><path d="M8 2l1.5 1.5M16 2l-1.5 1.5M9 9h6M9 13h6M5 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2M19 8a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2M12 19v2M7 19.5A5 5 0 0 1 7 9h10a5 5 0 0 1 0 10.5"/></svg>
+    </button>
+    <button class="icon-btn" id="openBtn" title="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="section-label">AI</div>
+<div class="cheat-grid" id="aiGrid"></div>
+<div class="divider"></div>
+<div class="section-label">Search</div>
+<div class="cheat-grid" id="srGrid"></div>
+
+<div class="footer">
+  <div class="shortcut-hint">
+    <span class="kbd" id="kbdShortcut">Alt+Shift+B</span>
+    <span style="color:var(--text3);font-size:10px">opens slingshot</span>
+  </div>
+  <div class="footer-actions">
+    <button class="icon-btn" id="shortcutBtn" title="Edit shortcuts" style="width:auto;padding:0 7px;gap:4px;font-size:10px;color:var(--text2)">
+      <svg viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      edit
+    </button>
+  </div>
+</div>
+
+<script src="../storage.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
