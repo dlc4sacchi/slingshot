@@ -291,6 +291,12 @@ function updateTogglePill(containerId, pillClass) {
   }
 }
 
+function refreshAllSegmentPills() {
+  updateTogglePill('themeSeg', 'type-pill');
+  updateTogglePill('srCatSeg', 'type-pill');
+  updateTogglePill('typeSeg', 'type-pill');
+}
+
 function markRowEnter(type, id) {
   pendingRowEnter[type] = id;
 }
@@ -336,7 +342,7 @@ function showPage(id){
   });
   if(id==='how') startSlides();
   if(id==='requests') {
-    setTimeout(() => updateTogglePill('typeSeg', 'type-pill'), 10);
+    setTimeout(() => refreshAllSegmentPills(), 10);
   }
 }
 document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
@@ -507,8 +513,9 @@ function updateInactiveExpansion(type) {
   // For Search category tabs:
   // - In non-All filters (general/dev/design/research), always show full list (no show more/less).
   // - In All, keep existing show more/less behavior.
+  // Do NOT set expandedState.sr here — that would stick when switching back to All and wrongly
+  // keep the inactive list expanded. Only toggle the container class for this view.
   if (type === 'sr' && currentSearchCategory !== 'all') {
-    expandedState[type] = true;
     container.classList.add('expanded');
     renderInactiveGrid(grid, inactive, type);
     return;
@@ -704,6 +711,7 @@ function renderAll(){
       pill.textContent = withShortcut ? withShortcut.shortcut : 'Alt+Shift+B';
     });
   }
+  requestAnimationFrame(() => refreshAllSegmentPills());
 }
 
 function updateStorageBar() {
@@ -1464,10 +1472,11 @@ function startSlides(){
 }
 
 
-// ── Theme switch ──────────────────────────────────────────────────────────────
+// ── Theme switch (same segmented control as Search / Requests) ─────────────────
 (function(){
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
   let mode = 'light';
+  const themeSeg = document.getElementById('themeSeg');
 
   chrome.storage.sync.get(['theme'], d => {
     applyTheme(d.theme || 'light');
@@ -1475,13 +1484,19 @@ function startSlides(){
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         document.documentElement.classList.add('theme-ready');
+        refreshAllSegmentPills();
       });
     });
   });
 
   function applyTheme(m) {
     mode = m;
-    document.querySelectorAll('.ts-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+    if (themeSeg) {
+      themeSeg.querySelectorAll('.type-seg-btn').forEach(b => {
+        b.classList.toggle('on', b.dataset.mode === m);
+      });
+      updateTogglePill('themeSeg', 'type-pill');
+    }
     if (m === 'auto') {
       document.documentElement.classList.toggle('dark', prefersDark.matches);
     } else {
@@ -1489,12 +1504,14 @@ function startSlides(){
     }
   }
 
-  document.querySelectorAll('.ts-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+  if (themeSeg) {
+    themeSeg.addEventListener('click', e => {
+      const btn = e.target.closest('.type-seg-btn');
+      if (!btn || !btn.dataset.mode) return;
       applyTheme(btn.dataset.mode);
       chrome.storage.sync.set({ theme: btn.dataset.mode });
     });
-  });
+  }
 
   prefersDark.addEventListener('change', () => {
     if (mode === 'auto') applyTheme('auto');
@@ -1583,15 +1600,6 @@ function startSlides(){
     const newCount = voted ? count + 1 : count - 1;
     btn.dataset.count = newCount;
     btn.querySelector('.vote-count').textContent = newCount;
-  });
-
-  let selectedType = 'ai';
-  document.getElementById('typeSeg').addEventListener('click', e => {
-    const btn = e.target.closest('.type-seg-btn');
-    if (!btn) return;
-    document.querySelectorAll('.type-seg-btn').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    selectedType = btn.dataset.val;
   });
 
 })();
@@ -2078,10 +2086,7 @@ document.getElementById('typeSeg').addEventListener('click', e => {
 });
 
 window.addEventListener('resize', () => {
-  const reqPage = document.getElementById('page-requests');
-  if (reqPage && reqPage.classList.contains('active')) {
-    updateTogglePill('typeSeg', 'type-pill');
-  }
+  refreshAllSegmentPills();
 });
 
 document.getElementById('reqList').addEventListener('click', e => {
@@ -2107,7 +2112,8 @@ document.getElementById('reqSubmitBtn').addEventListener('click', async () => {
   const urlInput = document.getElementById('reqUrl');
   const descInput = document.getElementById('reqDesc');
   const name = nameInput.value.trim();
-  const type = document.querySelector('.type-seg-btn.on').dataset.val;
+  const typeEl = document.querySelector('#typeSeg .type-seg-btn.on');
+  const type = typeEl ? typeEl.dataset.val : 'ai';
   
   // Use description field as the URL parameter for feature requests
   const url = type === 'feature' ? descInput.value.trim() : urlInput.value.trim();

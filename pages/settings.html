@@ -10,6 +10,7 @@
 <style>
 :root{
   --bg:#edeaff; --s1:#ffffff; --s2:#f0eeff; --s3:#e2deff;
+  --code-inline-bg:#ffffff;
   --border:#cdc8f7; --border2:#a9a0f0;
   --p:#5548e8; --p2:#7b73f5; --t:#057a52;
   --text:#110f2a; --text2:#4a4768; --text3:#8a87a8;
@@ -23,6 +24,7 @@
 }
 html.dark :root, html.dark{
   --bg:#08070f; --s1:#0e0d1a; --s2:#131224; --s3:#1a1830;
+  --code-inline-bg:rgba(19,18,36,0.92);
   --border:rgba(108,99,255,0.11); --border2:rgba(108,99,255,0.24);
   --p:#8b84ff; --p2:#b0abff; --t:#34d399;
   --text:#f0eeff; --text2:rgba(240,238,255,0.52); --text3:rgba(240,238,255,0.26);
@@ -84,6 +86,9 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 .sync-btn.syncing{pointer-events:none;opacity:.6}
 @keyframes sync-spin{to{transform:rotate(360deg)}}
 .pg-sub{font-size:14px;color:var(--text2);line-height:1.6}
+.pg-sub code{font-family:'DM Mono',monospace;background:var(--code-inline-bg);padding:1px 6px;border-radius:5px;font-size:13px;box-decoration-break:clone;-webkit-box-decoration-break:clone;color:var(--text)}
+.sync-explain code{font-family:'DM Mono',monospace;background:var(--code-inline-bg);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--text)}
+#page-admin code#admin-plan-state{font-family:'DM Mono',monospace;background:var(--code-inline-bg);padding:2px 6px;border-radius:4px;color:var(--text)}
 .card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;transition:border-color var(--dur-slow) var(--ease-standard)}
 .card:hover{border-color:var(--border2)}
 .card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
@@ -132,11 +137,12 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 .inactive-lbl{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:8px}
 .inactive-grid-container{position:relative;max-height:106px;overflow:hidden;transition:max-height var(--dur-slow) var(--ease-standard)}
 .inactive-grid-container.expanded{max-height:2000px}
-.inactive-grid{display:flex;flex-wrap:wrap;gap:5px;padding-top:4px;padding-bottom:2px}
-.show-all-btn{height:28px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;gap:5px;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:8px;font-size:12px;font-weight:500;font-family:inherit;color:var(--p);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);flex-shrink:0;box-sizing:border-box}
-.show-all-btn:hover{background:rgba(108,99,255,0.18);border-color:var(--border2)}
+.inactive-grid{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding-top:4px;padding-bottom:2px}
+.show-all-btn{height:28px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;gap:5px;background:rgba(108,99,255,0.11);border:1px solid rgba(108,99,255,0.26);border-radius:8px;font-size:12px;font-weight:600;font-family:inherit;color:var(--p);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);flex-shrink:0;box-sizing:border-box}
+.show-all-btn:hover{background:rgba(108,99,255,0.2);border-color:rgba(108,99,255,0.45)}
+html.dark .show-all-btn{background:rgba(139,132,255,0.14);border-color:rgba(139,132,255,0.35)}
+html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgba(139,132,255,0.5)}
 .show-all-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;transition:transform var(--dur-slow) var(--ease-standard)}
-.inactive-grid-container.expanded .show-all-btn{margin-top:2px}
 .request-nudge{display:flex;align-items:center;gap:8px;padding:9px 18px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);background:var(--s2)}
 .request-nudge svg{width:13px;height:13px;stroke:var(--p);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .request-nudge strong{color:var(--p);font-weight:600}
@@ -177,7 +183,7 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 .char-btn.on{border-color:var(--p);background:rgba(108,99,255,0.1);color:var(--p)}
 
 .char-hint{padding:0 18px 16px;font-size:12px;color:var(--text2)}
-.char-hint code{font-family:'DM Mono',monospace;background:var(--s2);padding:1px 5px;border-radius:4px;font-size:11px}
+.char-hint code{font-family:'DM Mono',monospace;background:var(--code-inline-bg);padding:1px 5px;border-radius:4px;font-size:11px}
 /* Locked inactive pills */
 .inact-btn.inact-locked{opacity:0.45;cursor:not-allowed;pointer-events:auto}
 .inact-lock{color:var(--text3);display:inline-flex;align-items:center;margin-left:2px}
@@ -246,12 +252,10 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 @keyframes section-enter{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── 3-way theme switch ── */
-.theme-switch{display:flex;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:2px;gap:1px;margin-top:14px}
-.ts-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;height:24px;padding:0 0 1px 0;border-radius:7px;border:none;background:transparent;color:var(--text3);font-size:10px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);user-select:none;line-height:1}
-.ts-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.ts-btn:hover{color:var(--text2)}
-.ts-btn.active{background:var(--s1);color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,0.09)}
+/* ── Theme segmented control (same .type-seg pattern as Search / Requests) ── */
+#themeSeg{display:flex;width:100%;box-sizing:border-box;margin-top:14px;background:var(--s2)}
+#themeSeg .type-seg-btn{flex:1;min-width:0;gap:4px;padding-left:4px;padding-right:4px}
+.type-seg-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
 /* ── How it works demos ── */
 
@@ -611,7 +615,7 @@ textarea.cf {
 .hw-bang{color:var(--t);font-weight:700}
 .hw-qt{color:var(--text2)}
 .hw-note{font-size:11px;color:var(--text3);line-height:1.6;margin-top:2px;padding:0 18px 18px}
-.hw-note-code{color:var(--text2);background:var(--s2);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace}
+.hw-note-code{color:var(--text2);background:var(--code-inline-bg);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace}
 @media (hover:hover){
   .sync-btn:hover,.show-all-btn:hover,.inact-btn:hover,.add-btn:hover,.btn-act:hover,.btn-getpro:hover,.backup-btn:hover{transform:translateY(-1px)}
 }
@@ -642,16 +646,17 @@ textarea.cf {
         <img src="../icons/icon128.png" width="28" height="28" style="flex-shrink:0" alt="Logo" />
         <span class="sb-logo-wordmark"><span class="logo-bang">Sling</span><span class="logo-ify">shot</span><span class="logo-mark"></span></span>
       </div>
-      <div class="theme-switch">
-        <button class="ts-btn active" data-mode="light" id="ts-light">
+      <div class="type-seg" id="themeSeg">
+        <div class="type-pill"></div>
+        <button type="button" class="type-seg-btn on" data-mode="light">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           Light
         </button>
-        <button class="ts-btn" data-mode="auto" id="ts-auto">
+        <button type="button" class="type-seg-btn" data-mode="auto">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor" stroke="none"/></svg>
           Auto
         </button>
-        <button class="ts-btn" data-mode="dark" id="ts-dark">
+        <button type="button" class="type-seg-btn" data-mode="dark">
           <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           Dark
         </button>
@@ -736,7 +741,7 @@ textarea.cf {
       <div class="page-section" id="page-ai">
         <div class="pg-header">
           <div class="pg-title">AI Prompter</div>
-          <div class="pg-sub">Toggle AI sites on or off. Use <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px" id="aiAllCode">!ai</code> to fire all active sites at once.</div>
+          <div class="pg-sub">Toggle AI sites on or off. Use <code id="aiAllCode">!ai</code> to fire all active sites at once.</div>
         </div>
         <div class="card">
           <div class="card-header">
@@ -764,7 +769,7 @@ textarea.cf {
               <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
             </button>
           </div>
-          <div class="pg-sub">Toggle engines on or off. Use <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px" id="srAllCode">!all</code> to fire all active engines, or <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px">!gen</code> <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px">!dev</code> <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px">!des</code> <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:5px;font-size:13px">!res</code> by category.</div>
+          <div class="pg-sub">Toggle engines on or off. Use <code id="srAllCode">!all</code> to fire all active engines, or <code>!gen</code> <code>!dev</code> <code>!des</code> <code>!res</code> by category.</div>
           <div style="margin-top:10px;display:flex;justify-content:center">
             <div class="type-seg" id="srCatSeg">
               <div class="type-pill"></div>
@@ -1133,9 +1138,9 @@ textarea.cf {
         </div>
         <div class="card">
           <div class="card-header"><span class="card-title">How to sync across devices for free</span></div>
-          <div style="padding:14px 18px;font-size:13px;color:var(--text2);line-height:1.7">
+          <div class="sync-explain" style="padding:14px 18px;font-size:13px;color:var(--text2);line-height:1.7">
             <div class="how-badge">no account needed</div>
-            <p style="margin-bottom:10px">Chrome syncs <code style="font-family:'DM Mono',monospace;background:var(--s2);padding:1px 5px;border-radius:4px;font-size:11px">chrome.storage.sync</code> automatically when you are signed in, so your settings follow you across installs for free.</p>
+            <p style="margin-bottom:10px">Chrome syncs <code>chrome.storage.sync</code> automatically when you are signed in, so your settings follow you across installs for free.</p>
             <p>If you use multiple browsers or want a manual copy, export above and drop the file in Google Drive, iCloud, or any folder you already sync.</p>
           </div>
         </div>
@@ -1156,7 +1161,7 @@ textarea.cf {
     <div style="display:flex;flex-wrap:wrap;gap:8px">
       <button class="add-btn" id="admin-wipe-all" style="color:var(--red);border-color:rgba(220,38,38,0.3)">💥 Wipe Everything (Fresh Install)</button>
       <button class="add-btn" id="admin-dump">📦 Dump Storage to Console</button>
-      <pre id="admin-storage-out" style="font-size:10px;font-family:'DM Mono',monospace;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px;overflow:auto;max-height:240px;display:none;white-space:pre-wrap"></pre>
+      <pre id="admin-storage-out" style="font-size:10px;font-family:'DM Mono',monospace;background:var(--code-inline-bg);border-radius:8px;padding:12px;overflow:auto;max-height:240px;display:none;white-space:pre-wrap"></pre>
     </div>
 
     <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:8px">Subscription 3-State Simulation</div>
@@ -1175,7 +1180,7 @@ textarea.cf {
 
 
 
-    <div style="font-size:11px;color:var(--text3);margin-top:4px">Current plan state: <code id="admin-plan-state" style="font-family:'DM Mono',monospace;background:var(--s2);padding:2px 6px;border-radius:4px">loading…</code></div>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px">Current plan state: <code id="admin-plan-state">loading…</code></div>
   </div>
 </div>
 <script src="../storage.js"></script>
