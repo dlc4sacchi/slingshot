@@ -9,7 +9,7 @@
 
   // Load on open — add theme-ready after first apply to prevent flash
   chrome.storage.sync.get(['theme'], d => {
-    applyTheme(d.theme || 'light');
+    applyTheme(d.theme || 'auto');
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         document.documentElement.classList.add('theme-ready');
@@ -20,7 +20,7 @@
   // Stay in sync if user changes theme in settings while popup is open
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'sync' && changes.theme) {
-      applyTheme(changes.theme.newValue || 'light');
+      applyTheme(changes.theme.newValue || 'auto');
     }
   });
 })();
@@ -107,7 +107,7 @@ if (chrome.commands) {
 
 // Header Actions
 document.getElementById('bugBtn').addEventListener('click', () => {
-  chrome.tabs.create({ url: 'https://github.com/ishanjirety/slingshot/issues' });
+  chrome.tabs.create({ url: chrome.runtime.getURL('pages/settings.html') + '#requests-bug' });
 });
 
 document.getElementById('openBtn').addEventListener('click', () => {

@@ -4,8 +4,14 @@ let isPro = false;
 let isTrial = false;
 let installDate = null;
 let editingSiteId = null;
+const SLINGSHOT_DEV_MODE = false;
 const PREFERS_REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const pendingRowEnter = { ai: null, search: null };
+
+function hasFullAccess() {
+  if (!MONETIZATION_ENABLED) return true;
+  return isPro || isTrial;
+}
 
 function escapeHTML(str) {
   if (!str) return '';
@@ -26,6 +32,66 @@ function faviconUrl(domain, size) {
 function domainFromSite(s) {
   if (s.match) return s.match;
   try { return new URL(s.url).hostname.replace(/^www\./, ''); } catch(e) { return s.id; }
+}
+
+/** Rejects single-label junk like "feef" that still parses as a URL but is not a real web host. */
+function hostnameLooksLikeWebAddress(hostname) {
+  if (!hostname) return false;
+  const h = hostname.toLowerCase();
+  if (h === 'localhost') return true;
+  if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(h)) return true;
+  return h.includes('.');
+}
+
+/** Accepts absolute or scheme-less URLs; returns normalized href or null. Only http/https. */
+function parseHttpUrl(raw) {
+  const t = (raw || '').trim();
+  if (!t) return null;
+  try {
+    const withScheme = /^https?:\/\//i.test(t) ? t : 'https://' + t;
+    const u = new URL(withScheme);
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+    if (!u.hostname) return null;
+    return u.href;
+  } catch (_) {
+    return null;
+  }
+}
+
+/** Site or API URL for requests (no template placeholder required). */
+function validateRequestSiteUrl(raw) {
+  const href = parseHttpUrl(raw);
+  if (!href) return { ok: false, message: 'Enter a valid website URL starting with https:// (or http://).' };
+  try {
+    const u = new URL(href);
+    if (!hostnameLooksLikeWebAddress(u.hostname)) {
+      return { ok: false, message: 'Use a real domain (e.g. https://example.com). Random words are not valid URLs.' };
+    }
+  } catch (_) {
+    return { ok: false, message: 'Enter a valid website URL starting with https:// (or http://).' };
+  }
+  return { ok: true, href };
+}
+
+/** Search template or custom engine URL must include %s for the query. Preserves exact %s in returned value. */
+function validateTemplateUrl(raw) {
+  const t = (raw || '').trim();
+  if (!t.includes('%s')) {
+    return { ok: false, message: 'URL must include %s where the search query goes (e.g. …?q=%s).' };
+  }
+  const probe = t.split('%s').join('slingshotqsplaceholder');
+  const probeHref = parseHttpUrl(probe);
+  if (!probeHref) {
+    return { ok: false, message: 'Enter a valid URL starting with https:// (or http://).' };
+  }
+  try {
+    if (!hostnameLooksLikeWebAddress(new URL(probeHref).hostname)) {
+      return { ok: false, message: 'Use a real domain in the URL (e.g. https://google.com/search?q=%s).' };
+    }
+  } catch (_) {
+    return { ok: false, message: 'Enter a valid URL starting with https:// (or http://).' };
+  }
+  return { ok: true, value: t };
 }
 
 // ── URL inference helpers (non-AI) ─────────────────────────────────────────────
@@ -242,13 +308,13 @@ function makeIconEl(s, size) {
       const g = CUSTOM_GRADIENTS[customGradIdx % CUSTOM_GRADIENTS.length];
       wrap.style.cssText = `width:${size}px;height:${size}px;border-radius:${radius};display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,${g[0]},${g[1]})`;
       const letter = document.createElement('span');
-      letter.style.cssText = `font-size:${Math.round(size*.44)}px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;line-height:1`;
+      letter.style.cssText = `font-size:${Math.round(size*.44)}px;font-weight:700;color:#fff;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;line-height:1`;
       letter.textContent = s.name[0].toUpperCase();
       wrap.appendChild(letter);
     } else {
       wrap.style.background = 'var(--s3)';
       const letter = document.createElement('span');
-      letter.style.cssText = `font-size:${Math.round(size*.44)}px;font-weight:700;color:var(--text2);font-family:'DM Mono',monospace;line-height:1`;
+      letter.style.cssText = `font-size:${Math.round(size*.44)}px;font-weight:700;color:var(--text2);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;line-height:1`;
       letter.textContent = s.name[0].toUpperCase();
       wrap.appendChild(letter);
     }
@@ -283,12 +349,18 @@ function updateTogglePill(containerId, pillClass) {
   if (!container) return;
   const pill = container.querySelector('.' + pillClass);
   const activeBtn = container.querySelector('.on');
-  if (pill && activeBtn) {
-    pill.style.width = activeBtn.offsetWidth + 'px';
-    pill.style.height = activeBtn.offsetHeight + 'px';
-    pill.style.left = activeBtn.offsetLeft + 'px';
-    pill.style.top = activeBtn.offsetTop + 'px';
-  }
+  if (!pill || !activeBtn) return;
+  const c = container.getBoundingClientRect();
+  const b = activeBtn.getBoundingClientRect();
+  // Hidden sections (display:none) report 0×0 rects — do not overwrite pill or it collapses until remeasured.
+  if (b.width < 1 || b.height < 1 || c.width < 1 || c.height < 1) return;
+  const cs = getComputedStyle(container);
+  const bl = parseFloat(cs.borderLeftWidth) || 0;
+  const bt = parseFloat(cs.borderTopWidth) || 0;
+  pill.style.width = b.width + 'px';
+  pill.style.height = b.height + 'px';
+  pill.style.left = b.left - c.left - bl + 'px';
+  pill.style.top = b.top - c.top - bt + 'px';
 }
 
 function refreshAllSegmentPills() {
@@ -328,6 +400,9 @@ function animateRowExit(type, id, done) {
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function showPage(id){
+  if (id === 'pro' && !MONETIZATION_ENABLED) {
+    id = 'search';
+  }
   document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active'));
   const target = document.getElementById('page-'+id);
   if (target) {
@@ -341,9 +416,8 @@ function showPage(id){
     n.classList.toggle('active', n.dataset.page===id);
   });
   if(id==='how') startSlides();
-  if(id==='requests') {
-    setTimeout(() => refreshAllSegmentPills(), 10);
-  }
+  // Remeasure segmented pills after the new page is visible (avoids stale layout; complements updateTogglePill skip when hidden).
+  setTimeout(() => refreshAllSegmentPills(), 10);
 }
 document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
   item.addEventListener('click', ()=>showPage(item.dataset.page));
@@ -388,6 +462,7 @@ document.getElementById('reqSyncBtn')?.addEventListener('click', function() {
 // Dev/Admin panel: hidden by default. Reveal by double-clicking the logo.
 // (Prevents exposing the panel in production UI while keeping it available for debugging.)
 (function setupAdminReveal() {
+  if (!SLINGSHOT_DEV_MODE) return;
   const logo = document.querySelector('.sb-logo');
   const adminNav = document.querySelector('.admin-nav-item');
   const adminPage = document.getElementById('page-admin');
@@ -569,7 +644,7 @@ function renderInactiveGrid(grid, inactive, type) {
   if (!inactive || inactive.length === 0) { grid.replaceChildren(); return; }
   const _gridW = grid.clientWidth || 612;
   const isAi = type === 'ai';
-  const fullAccess = isPro || isTrial;
+  const fullAccess = hasFullAccess();
   const activeCount = isAi ? activeAi() : activeSr();
   
   // Create and map nodes
@@ -683,7 +758,10 @@ function renderAll(){
   const showPro = d => { if (d) d.style.display = ''; };
   const hidePro = d => { if (d) d.style.display = 'none'; };
 
-  if (isPro) {
+  if (!MONETIZATION_ENABLED) {
+    hidePro(planChip); hidePro(proHero); hidePro(proKeySection); hidePro(proKeyHeader); hidePro(proUnlocked);
+    hidePro(navProPlan); hidePro(pageProSection);
+  } else if (isPro) {
     showPro(planChip); planTag.textContent = 'Pro ✦'; planTag.className = 'plan-tag pro';
     hidePro(proHero); hidePro(proKeySection); hidePro(proKeyHeader);
     showPro(navProPlan); showPro(pageProSection);
@@ -714,20 +792,47 @@ function renderAll(){
   requestAnimationFrame(() => refreshAllSegmentPills());
 }
 
+function applyStorageBarUsed(used, fill, label, quota) {
+  const pct = Math.min((used / quota) * 100, 100);
+  fill.style.width = pct.toFixed(1) + '%';
+  fill.className = 'storage-bar-fill' + (pct > 80 ? ' danger' : pct > 55 ? ' warn' : '');
+  const usedKb = (used / 1024).toFixed(1);
+  const totalKb = (quota / 1024).toFixed(0);
+  label.textContent = usedKb + ' / ' + totalKb + ' KB';
+}
+
+function estimateLocalStorageBytes(data) {
+  let n = 0;
+  for (const k of Object.keys(data || {})) {
+    n += k.length + JSON.stringify(data[k]).length;
+  }
+  return n;
+}
+
 function updateStorageBar() {
   const fill  = document.getElementById('storageBarFill');
   const label = document.getElementById('storageUsedLabel');
   if (!fill || !label) return;
   // chrome.storage.local quota is 5MB (5,242,880 bytes)
   const QUOTA = 5 * 1024 * 1024;
-  chrome.storage.local.getBytesInUse(null, (used) => {
-    const pct = Math.min((used / QUOTA) * 100, 100);
-    fill.style.width = pct.toFixed(1) + '%';
-    fill.className = 'storage-bar-fill' + (pct > 80 ? ' danger' : pct > 55 ? ' warn' : '');
-    const usedKb = (used / 1024).toFixed(1);
-    const totalKb = (QUOTA / 1024).toFixed(0);
-    label.textContent = usedKb + ' / ' + totalKb + ' KB';
-  });
+  const local = chrome.storage.local;
+  function fallbackFromGetAll() {
+    local.get(null, (data) => {
+      if (chrome.runtime.lastError) return;
+      applyStorageBarUsed(estimateLocalStorageBytes(data), fill, label, QUOTA);
+    });
+  }
+  if (typeof local.getBytesInUse === 'function') {
+    local.getBytesInUse(null, (used) => {
+      if (chrome.runtime.lastError) {
+        fallbackFromGetAll();
+        return;
+      }
+      applyStorageBarUsed(used, fill, label, QUOTA);
+    });
+  } else {
+    fallbackFromGetAll();
+  }
 }
 
 // ── Interactions ──────────────────────────────────────────────────────────────
@@ -744,7 +849,7 @@ document.getElementById('aiInactive').addEventListener('click', e=>{
   if(edit){ startEdit(edit.dataset.edit, 'ai'); return; }
   const btn = e.target.closest('[data-act]');
   if(!btn) return;
-  const fullAccess = isPro || isTrial;
+  const fullAccess = hasFullAccess();
   if(!fullAccess && activeAi()>=FREE_LIMIT){
     showBangConflictToast('Free plan · max 2 active AI sites', 'upgrade');
     return;
@@ -764,7 +869,7 @@ document.getElementById('srInactive').addEventListener('click', e=>{
   if(edit){ startEdit(edit.dataset.edit, 'search'); return; }
   const btn = e.target.closest('[data-act]');
   if(!btn) return;
-  const fullAccess = isPro || isTrial;
+  const fullAccess = hasFullAccess();
   if(!fullAccess && activeSr()>=FREE_LIMIT){
     showBangConflictToast('Free plan · max 2 active search engines', 'upgrade');
     return;
@@ -773,7 +878,7 @@ document.getElementById('srInactive').addEventListener('click', e=>{
 });
 
 function toggleSite(type, id){
-  const fullAccess = isPro || isTrial;
+  const fullAccess = hasFullAccess();
   if(type==='ai'){
     const site = aiSites.find(s=>s.id===id);
     if(site && !site.active && !fullAccess && activeAi()>=FREE_LIMIT){
@@ -884,6 +989,26 @@ function addCustom(type){
   const url  = document.getElementById(isAi?'aiUrl':'srUrl').value.trim();
   if(!name||!url) return;
 
+  let urlToSave = url;
+  if (!isAi) {
+    const tv = validateTemplateUrl(url);
+    if (!tv.ok) {
+      showBangConflictToast(tv.message, '');
+      return;
+    }
+    urlToSave = tv.value;
+  } else {
+    const aiEl = document.getElementById('aiUrl');
+    if (aiEl) {
+      const tv = validateTemplateUrl(url);
+      if (!tv.ok) {
+        showBangConflictToast(tv.message, '');
+        return;
+      }
+      urlToSave = tv.value;
+    }
+  }
+
   const allSites = [...aiSites, ...searchEngines];
 
   // Check bang collision across both lists
@@ -899,16 +1024,16 @@ function addCustom(type){
     const targetList = isAi ? aiSites : searchEngines;
     const idx = targetList.findIndex(s => s.id === editingSiteId);
     if (idx > -1) {
-      targetList[idx] = { ...targetList[idx], name, bang: rawBang || editingSiteId.slice(-4), url };
+      targetList[idx] = { ...targetList[idx], name, bang: rawBang || editingSiteId.slice(-4), url: urlToSave };
     }
     resetEditForm(isAi);
   } else {
     const id = 'custom_'+Date.now();
     const assignedBang = rawBang || id.slice(-4);
-    const fullAccess = isPro || isTrial;
+    const fullAccess = hasFullAccess();
     const currentActive = isAi ? activeAi() : activeSr();
     const shouldBeActive = fullAccess || currentActive < FREE_LIMIT;
-    const newSite = {id,name,bang:assignedBang,url,active:shouldBeActive,custom:true};
+    const newSite = {id,name,bang:assignedBang,url:urlToSave,active:shouldBeActive,custom:true};
     if(isAi) aiSites.push(newSite); else searchEngines.push(newSite);
     if (!shouldBeActive) showBangConflictToast('Free plan · added as inactive (max 2 active)', 'upgrade');
     resetEditForm(isAi);
@@ -938,17 +1063,20 @@ document.getElementById('charGrid').addEventListener('click', e=>{
   renderAll();
 });
 
-document.getElementById('activateBtn').addEventListener('click', ()=>{
-  const key = document.getElementById('licenseInput').value.trim();
-  if(key.length>6){
-    isPro=true;
-    chrome.storage.sync.set({ license: key });
-    document.getElementById('proKeySection').style.display='none';
-    document.getElementById('proKeyHeader').style.display='none';
-    document.getElementById('proUnlocked').style.display='flex';
-    renderAll();
-  }
-});
+const activateBtn = document.getElementById('activateBtn');
+if (activateBtn && MONETIZATION_ENABLED) {
+  activateBtn.addEventListener('click', ()=>{
+    const key = document.getElementById('licenseInput').value.trim();
+    if(key.length>6){
+      isPro=true;
+      chrome.storage.sync.set({ license: key });
+      document.getElementById('proKeySection').style.display='none';
+      document.getElementById('proKeyHeader').style.display='none';
+      document.getElementById('proUnlocked').style.display='flex';
+      renderAll();
+    }
+  });
+}
 
 // ── Slides ────────────────────────────────────────────────────────────────────
 // ── How it works animations ───────────────────────────────────────────────────
@@ -1475,11 +1603,11 @@ function startSlides(){
 // ── Theme switch (same segmented control as Search / Requests) ─────────────────
 (function(){
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-  let mode = 'light';
+  let mode = 'auto';
   const themeSeg = document.getElementById('themeSeg');
 
   chrome.storage.sync.get(['theme'], d => {
-    applyTheme(d.theme || 'light');
+    applyTheme(d.theme || 'auto');
     // Only enable transitions after initial theme is applied — prevents flash on load
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -1611,13 +1739,19 @@ function startSlides(){
   const EXPORT_SYNC_KEYS = ['bangChar'];
   const LOCAL_KEYS = ['aiSites','searchEngines'];
 
+  function backupDownloadFilename() {
+    const d = new Date();
+    const p = n => String(n).padStart(2, '0');
+    return `slingshot_backup_${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}.json`;
+  }
+
   document.getElementById('exportBtn').addEventListener('click', () => {
     chrome.storage.sync.get(EXPORT_SYNC_KEYS, syncData => {
       chrome.storage.local.get(LOCAL_KEYS, localData => {
         const blob = new Blob([JSON.stringify({...syncData, ...localData}, null, 2)], {type:'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'slingshot_backup.json';
+        a.download = backupDownloadFilename();
         a.click();
         const now = new Date().toLocaleString();
         document.getElementById('lastExport').textContent = now;
@@ -1765,8 +1899,10 @@ function commitBangEdit(input) {
   tag.style.display = '';
 }
 
-document.querySelectorAll('.request-nudge[data-goto]').forEach(el => {
-  el.addEventListener('click', () => showPage(el.dataset.goto));
+document.querySelectorAll('[data-goto]').forEach(el => {
+  const id = el.dataset.goto;
+  if (!id) return;
+  el.addEventListener('click', () => showPage(id));
 });
 
 // ── Persist & Init ────────────────────────────────────────────────────────────
@@ -1810,38 +1946,54 @@ document.querySelectorAll('.warn-icon').forEach(icon => {
   });
 });
 
-// Navigate to page from URL hash (e.g. options.html#shortcuts from popup)
+// Navigate to page from URL hash (e.g. options.html#shortcuts from popup; #requests-bug opens Requests with Bug report selected)
 (function() {
   const hash = window.location.hash.slice(1);
-  if (hash) {
-    const pageMap = { shortcuts: 'bang', ai: 'ai', search: 'search', pro: 'pro', backup: 'backup', requests: 'requests', news: 'news' };
-    const page = pageMap[hash];
-    if (page) {
-      // Defer until after init() has rendered
-      window.addEventListener('load', () => showPage(page), { once: true });
-    }
+  if (!hash) return;
+
+  const reqSeg = hash.match(/^requests-(ai|se|feature|bug)$/);
+  if (reqSeg) {
+    window.addEventListener('load', () => {
+      showPage('requests');
+      const type = reqSeg[1];
+      const container = document.getElementById('typeSeg');
+      const btn = container?.querySelector('.type-seg-btn[data-val="' + type + '"]');
+      if (container && btn) {
+        container.querySelectorAll('.type-seg-btn').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        updateTogglePill('typeSeg', 'type-pill');
+        updateRequestFields(type);
+      }
+    }, { once: true });
+    return;
+  }
+
+  const pageMap = { shortcuts: 'bang', ai: 'ai', search: 'search', features: 'features', backup: 'backup', requests: 'requests', news: 'news', ...(MONETIZATION_ENABLED ? { pro: 'pro' } : {}) };
+  const page = pageMap[hash];
+  if (page) {
+    window.addEventListener('load', () => showPage(page), { once: true });
   }
 })();
 
-// Chrome shortcut manager link
-const chromeLink = document.getElementById('chromeShortcutLink');
-if (chromeLink) {
-  chromeLink.addEventListener('click', e => {
+// Extension shortcut manager link (Chrome internal page vs Firefox help — about:addons is not openable from tabs.create)
+const shortcutManagerLink = document.getElementById('shortcutManagerLink');
+if (shortcutManagerLink) {
+  const isFirefox = typeof browser !== 'undefined' && typeof browser.runtime?.getBrowserInfo === 'function';
+  shortcutManagerLink.textContent = isFirefox
+    ? 'How to change shortcuts in Firefox'
+    : 'Manage in chrome://extensions/shortcuts';
+  shortcutManagerLink.addEventListener('click', e => {
     e.preventDefault();
-    chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
-  });
-}
-
-// Bug report nudge on requests page
-const bugNudge = document.getElementById('bugReportNudge');
-if (bugNudge) {
-  bugNudge.addEventListener('click', () => {
-    chrome.tabs.create({ url: 'https://github.com/bangify/slingshot/issues/new' });
+    const url = isFirefox
+      ? 'https://support.mozilla.org/kb/manage-extension-shortcuts-firefox'
+      : 'chrome://extensions/shortcuts';
+    chrome.tabs.create({ url });
   });
 }
 
 // ── Trial enforcement helpers ──────────────────────────────────────────────
 function enforceFreeLimits() {
+  if (!MONETIZATION_ENABLED) return false;
   // Returns true if any changes were made (needs save)
   let changed = false;
   [aiSites, searchEngines].forEach(list => {
@@ -1871,7 +2023,7 @@ async function loadNews() {
     renderNews();
   } catch (err) {
     console.error('[Slingshot] Failed to load news:', err);
-    container.innerHTML = `<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:'DM Mono',monospace;color:var(--red)">Failed to load news billboard.</div>`;
+    container.innerHTML = `<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--red)">Failed to load news billboard.</div>`;
   }
 }
 
@@ -1879,21 +2031,21 @@ function renderNews() {
   const container = document.getElementById('newsList');
   if (!container) return;
   if (!newsData.length) {
-    container.innerHTML = `<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:'DM Mono',monospace">No news yet. Check back soon!</div>`;
+    container.innerHTML = `<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace">No news yet. Check back soon!</div>`;
     return;
   }
   container.innerHTML = newsData.map(n => {
     const d = new Date(n.created_at);
     const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const versionPill = n.version
-      ? `<span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:var(--p);background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.18);padding:2px 8px;border-radius:20px;margin-left:8px">${escapeHTML(n.version)}</span>`
+      ? `<span style="font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;font-size:10px;font-weight:700;color:var(--p);background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.18);padding:2px 8px;border-radius:20px;margin-left:8px">${escapeHTML(n.version)}</span>`
       : '';
     const linkEl = n.link
       ? `<a href="${n.link}" target="_blank" style="font-size:12px;color:var(--p);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-top:10px">View more <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`
       : '';
     return `<div class="news-item">
       <div style="display:flex;align-items:center;margin-bottom:7px">
-        <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${dateStr}</span>${versionPill}
+        <span style="font-size:11px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace">${dateStr}</span>${versionPill}
       </div>
       <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-0.2px">${escapeHTML(n.title)}</div>
       <div style="font-size:13px;color:var(--text2);line-height:1.65">${escapeHTML(n.description || '')}</div>
@@ -1906,34 +2058,55 @@ function renderNews() {
 let requestsData = [];
 let currentReqType = 'all';
 
-// Rate limiting: 1 request per hour
-async function checkRequestCooldown() {
-  const btn = document.getElementById('reqSubmitBtn');
-  if (!btn) return;
-  const lastTime = await new Promise(resolve => {
-    chrome.storage.sync.get(['lastRequestTime'], res => resolve(res.lastRequestTime || 0));
+/** Vote count as shown in UI (source of truth for sorting + display). */
+function requestVoteCount(r) {
+  return Array.isArray(r.voter_ids) ? r.voter_ids.length : 0;
+}
+
+/** Integer vote label — avoids NaN when RPC omits votes or DOM text is non-numeric. */
+function parseDisplayedVoteCount(text) {
+  const n = parseInt(String(text == null ? '' : text).trim(), 10);
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
+/** Stable sort: primary by votes desc, then name, then id — avoids tie-order flicker on re-fetch. */
+function sortRequestsDataStable() {
+  requestsData.sort((a, b) => {
+    const va = requestVoteCount(a);
+    const vb = requestVoteCount(b);
+    if (vb !== va) return vb - va;
+    const na = (a.name || '').toLowerCase();
+    const nb = (b.name || '').toLowerCase();
+    if (na < nb) return -1;
+    if (na > nb) return 1;
+    return String(a.id).localeCompare(String(b.id));
   });
-  const diff = Date.now() - lastTime;
-  const cooldown = 3600000; 
-  if (diff < cooldown) {
-    const minLeft = Math.ceil((cooldown - diff) / 60000);
-    btn.classList.add('disabled');
-    btn.title = `Next request in ${minLeft}m`;
+}
+
+function applyRequestsListHtml(html) {
+  const container = document.getElementById('reqList');
+  if (!container) return;
+  const go = () => { container.innerHTML = html; };
+  if (typeof document.startViewTransition === 'function') {
+    document.startViewTransition(go);
   } else {
-    btn.classList.remove('disabled');
-    btn.title = '';
+    go();
   }
 }
 
-// Generate or get a persistent anonymous ID for voting
+// Generate or get a persistent anonymous ID for voting (single-flight cache avoids render delay + duplicate reads)
+let installIdPromise = null;
 async function getInstallId() {
-  return new Promise(resolve => {
-    chrome.storage.sync.get(['installId'], res => {
-      if (res.installId) return resolve(res.installId);
-      const newId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
-      chrome.storage.sync.set({ installId: newId }, () => resolve(newId));
+  if (!installIdPromise) {
+    installIdPromise = new Promise(resolve => {
+      chrome.storage.sync.get(['installId'], res => {
+        if (res.installId) return resolve(res.installId);
+        const newId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+        chrome.storage.sync.set({ installId: newId }, () => resolve(newId));
+      });
     });
-  });
+  }
+  return installIdPromise;
 }
 
 function renderRequests() {
@@ -1944,18 +2117,19 @@ function renderRequests() {
   const filtered = requestsData.filter(r => currentReqType === 'all' || r.type === currentReqType);
   
   if (filtered.length === 0) {
-    container.innerHTML = `<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:'DM Mono',monospace">No ${currentReqType !== 'all' ? currentReqType : ''} requests yet</div>`;
+    applyRequestsListHtml(`<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace">No ${currentReqType !== 'all' ? currentReqType : ''} requests yet</div>`);
     return;
   }
 
   getInstallId().then(userId => {
-    container.innerHTML = filtered.map(r => {
+    const html = filtered.map(r => {
       const isAi = r.type === 'ai';
       const isFeat = r.type === 'feature';
-      const typeStr = isFeat ? 'Feature' : (isAi ? 'AI' : 'Search');
-      const colorCls = isFeat ? 'feature' : (isAi ? 'ai' : 'se');
+      const isBug = r.type === 'bug';
+      const typeStr = isBug ? 'Bug' : isFeat ? 'Feature' : (isAi ? 'AI' : 'Search');
+      const colorCls = isBug ? 'bug' : isFeat ? 'feature' : (isAi ? 'ai' : 'se');
       const voters = Array.isArray(r.voter_ids) ? r.voter_ids : [];
-      const voteCount = voters.length;
+      const voteCount = requestVoteCount(r);
       const voted = voters.includes(userId);
       const btnState = voted ? ' voted' : '';
       
@@ -1963,8 +2137,11 @@ function renderRequests() {
       let metaSub = '';
       
       if (r.type === 'feature') {
-        iconHtml = `<div style="width:36px;height:36px;background:var(--s2);color:var(--text3);display:flex;align-items:center;justify-content:center;border-radius:9px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L13.09 8.26L19 6L14.74 10.74L21 12L14.74 13.26L19 18L13.09 15.74L12 22L10.91 15.74L5 18L9.26 13.26L3 12L9.26 10.74L5 6L10.91 8.26L12 2Z"/></svg></div>`;
+        iconHtml = `<div style="width:36px;height:36px;background:rgba(108,99,255,0.12);color:var(--p);display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid rgba(108,99,255,0.2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.815 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg></div>`;
         metaSub = 'Feature Request';
+      } else if (r.type === 'bug') {
+        iconHtml = `<div style="width:36px;height:36px;background:rgba(220,38,38,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid rgba(220,38,38,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M9.5 5.5L8.5 3.5M14.5 5.5l1-2"/><ellipse cx="12" cy="14" rx="6.5" ry="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path fill="none" stroke="currentColor" stroke-width="1.5" d="M12 7v14"/><circle cx="9" cy="12" r="1.35" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.35" fill="currentColor" stroke="none"/><circle cx="9" cy="17.5" r="1.05" fill="currentColor" stroke="none"/><circle cx="15" cy="17.5" r="1.05" fill="currentColor" stroke="none"/><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M5.5 11H3M21 11h-2.5M5.5 15H3M21 15h-2.5M6.5 19l-1.5 2M17.5 19l1.5 2"/></svg></div>`;
+        metaSub = 'Bug report';
       } else {
         const domain = urlDomain(r.url);
         const favicon = faviconUrl(domain, 128);
@@ -1993,18 +2170,20 @@ function renderRequests() {
         </div>
       `;
     }).join('');
+    applyRequestsListHtml(html);
   });
 }
 
 async function loadRequests() {
   try {
-    const res = await supaFetch('site_requests?status=eq.pending&select=*&order=votes.desc');
+    const res = await supaFetch('site_requests?status=eq.pending&select=*&order=votes.desc,id.asc');
     if (!res.ok) throw new Error('Fetch failed');
     requestsData = await res.json();
+    sortRequestsDataStable();
     renderRequests();
   } catch (err) {
     console.error('[Slingshot] Failed to load requests:', err);
-    document.getElementById('reqList').innerHTML = `<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:'DM Mono',monospace;color:var(--red)">Failed to load requests.<br>Please try again later.</div>`;
+    document.getElementById('reqList').innerHTML = `<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--red)">Failed to load requests.<br>Please try again later.</div>`;
   }
 }
 
@@ -2015,13 +2194,13 @@ async function upvoteRequest(reqId, btn) {
   const userId = await getInstallId();
   const alreadyVoted = btn.dataset.voted === 'true';
   const countSpan = btn.querySelector('.vote-count');
-  const prevVotes = parseInt(countSpan.textContent.trim(), 10) || 0;
+  const prevVotes = parseDisplayedVoteCount(countSpan && countSpan.textContent);
   const prevVoted = alreadyVoted;
 
   // Optimistic UI toggle
   const optimisticVotes = alreadyVoted ? Math.max(prevVotes - 1, 0) : prevVotes + 1;
   btn.classList.toggle('voted', !alreadyVoted);
-  countSpan.textContent = optimisticVotes;
+  countSpan.textContent = String(optimisticVotes);
   btn.dataset.voted = String(!alreadyVoted);
 
   try {
@@ -2032,16 +2211,32 @@ async function upvoteRequest(reqId, btn) {
     });
     const result = await res.json();
     if (result && result.success) {
-      countSpan.textContent = result.votes;
+      const serverVotes = Number(result.votes);
+      const useVotes = Number.isFinite(serverVotes) && serverVotes >= 0
+        ? Math.floor(serverVotes)
+        : optimisticVotes;
+      countSpan.textContent = String(useVotes);
       btn.classList.toggle('voted', result.voted);
       btn.dataset.voted = String(result.voted);
+      const row = requestsData.find(r => String(r.id) === String(reqId));
+      if (row) {
+        if (Number.isFinite(Number(result.votes))) row.votes = Math.floor(Number(result.votes));
+        if (!Array.isArray(row.voter_ids)) row.voter_ids = [];
+        if (result.voted) {
+          if (!row.voter_ids.includes(userId)) row.voter_ids.push(userId);
+        } else {
+          row.voter_ids = row.voter_ids.filter(v => v !== userId);
+        }
+      }
+      // Intentionally no renderRequests() here — full innerHTML would remount every row (favicon/hover flicker).
+      // Stable sort runs on loadRequests (sync/submit/init). Reorder after vote: refresh list or revisit page.
     } else {
       throw new Error(result?.message || 'Toggle failed');
     }
   } catch (err) {
     console.error('[Slingshot] Vote toggle failed:', err);
     btn.classList.toggle('voted', prevVoted);
-    countSpan.textContent = prevVotes;
+    countSpan.textContent = String(prevVotes);
     btn.dataset.voted = String(prevVoted);
   } finally {
     btn.dataset.busy = 'false';
@@ -2051,24 +2246,30 @@ async function upvoteRequest(reqId, btn) {
 // Event Listeners for Requests Tab
 
 function updateRequestFields(type) {
-  const isFeat = type === 'feature';
+  const isFeatLike = type === 'feature' || type === 'bug';
   const nameInput = document.getElementById('reqName');
   const urlInput = document.getElementById('reqUrl');
   const descRow = document.getElementById('reqDescRow');
+  const descInput = document.getElementById('reqDesc');
 
   if (nameInput) {
     if (type === 'ai') nameInput.placeholder = 'Name (e.g. Perplexity AI)';
     else if (type === 'se') nameInput.placeholder = 'Name (e.g. DuckDuckGo)';
     else if (type === 'feature') nameInput.placeholder = 'Feature name (e.g. Dark mode)';
+    else if (type === 'bug') nameInput.placeholder = 'Short summary (e.g. Vote count stuck at 0)';
   }
 
   if (urlInput) {
-    urlInput.style.display = isFeat ? 'none' : 'block';
+    urlInput.style.display = isFeatLike ? 'none' : 'block';
     if (type === 'se') urlInput.placeholder = 'Search URL (https://.../q=%s)';
     else urlInput.placeholder = 'Website URL (https://...)';
   }
   
-  if (descRow) descRow.style.display = isFeat ? 'block' : 'none';
+  if (descRow) descRow.style.display = isFeatLike ? 'block' : 'none';
+  if (descInput) {
+    if (type === 'feature') descInput.placeholder = 'Briefly describe the feature...';
+    else if (type === 'bug') descInput.placeholder = 'Describe steps to reproduce...';
+  }
 }
 
 document.getElementById('typeSeg').addEventListener('click', e => {
@@ -2099,14 +2300,6 @@ document.getElementById('reqList').addEventListener('click', e => {
 
 document.getElementById('reqSubmitBtn').addEventListener('click', async () => {
   const btn = document.getElementById('reqSubmitBtn');
-  if (btn.classList.contains('disabled')) {
-    const lastTime = await new Promise(resolve => {
-      chrome.storage.sync.get(['lastRequestTime'], res => resolve(res.lastRequestTime || 0));
-    });
-    const minLeft = Math.ceil((3600000 - (Date.now() - lastTime)) / 60000);
-    showBangConflictToast(`Rate limit: Try again in ${minLeft}m`, '');
-    return;
-  }
 
   const nameInput = document.getElementById('reqName');
   const urlInput = document.getElementById('reqUrl');
@@ -2115,12 +2308,48 @@ document.getElementById('reqSubmitBtn').addEventListener('click', async () => {
   const typeEl = document.querySelector('#typeSeg .type-seg-btn.on');
   const type = typeEl ? typeEl.dataset.val : 'ai';
   
-  // Use description field as the URL parameter for feature requests
-  const url = type === 'feature' ? descInput.value.trim() : urlInput.value.trim();
+  // Use description field as the URL column for feature/bug requests (same pattern as feature)
+  let url = (type === 'feature' || type === 'bug') ? descInput.value.trim() : urlInput.value.trim();
 
   if (!name || !url) {
-    showBangConflictToast(!name ? 'Please provide a name' : (type === 'feature' ? 'Please describe the feature' : 'Please provide a URL'), '');
+    const needDesc = type === 'feature' || type === 'bug';
+    const descMsg = type === 'feature' ? 'Please describe the feature' : type === 'bug' ? 'Please describe the bug' : 'Please provide a URL';
+    showBangConflictToast(!name ? 'Please provide a name' : (needDesc ? descMsg : 'Please provide a URL'), '');
     return;
+  }
+
+  if (type === 'feature' || type === 'bug') {
+    const TITLE_MIN = 8;
+    const DESC_MIN = 15;
+    if (name.length < TITLE_MIN) {
+      showBangConflictToast(`Please enter a clearer title (at least ${TITLE_MIN} characters).`, '');
+      return;
+    }
+    if (url.length < DESC_MIN) {
+      showBangConflictToast(
+        type === 'feature'
+          ? `Please describe the feature in more detail (at least ${DESC_MIN} characters).`
+          : `Please describe the bug with steps to reproduce (at least ${DESC_MIN} characters).`,
+        ''
+      );
+      return;
+    }
+  }
+
+  if (type === 'ai') {
+    const v = validateRequestSiteUrl(url);
+    if (!v.ok) {
+      showBangConflictToast(v.message, '');
+      return;
+    }
+    url = v.href;
+  } else if (type === 'se') {
+    const v = validateTemplateUrl(url);
+    if (!v.ok) {
+      showBangConflictToast(v.message, '');
+      return;
+    }
+    url = v.value;
   }
   
   btn.classList.add('disabled');
@@ -2141,9 +2370,7 @@ document.getElementById('reqSubmitBtn').addEventListener('click', async () => {
       urlInput.value = '';
       if (descInput) descInput.value = '';
       showBangConflictToast('Request submitted!', '');
-      chrome.storage.sync.set({ lastRequestTime: Date.now() });
       await loadRequests();
-      checkRequestCooldown();
     } else {
       showBangConflictToast(result.message || 'Submission failed', '');
     }
@@ -2152,7 +2379,7 @@ document.getElementById('reqSubmitBtn').addEventListener('click', async () => {
     showBangConflictToast('Network error, try again', '');
   } finally {
     btn.textContent = originalText;
-    checkRequestCooldown();
+    btn.classList.remove('disabled');
   }
 });
 
@@ -2168,29 +2395,59 @@ function init(){
     installDate = data.installDate;
     bc          = data.bangChar || '!';
 
-    if (!isPaidOrTrial(data.license, data.installDate)) {
+    if (MONETIZATION_ENABLED && !isPaidOrTrial(data.license, data.installDate)) {
       if (enforceFreeLimits()) {
         saveAiSites(aiSites, () => {});
         saveSearchEngines(searchEngines, () => {});
       }
     }
+    if (!MONETIZATION_ENABLED) {
+      document.querySelectorAll('[data-monetization-only]').forEach(el => { el.style.display = 'none'; });
+    }
     renderAll();
+    updateFeatureSwapToggle(data.aiFeatures);
     
     // Load community updates
     loadNews();
     loadRequests();
-    checkRequestCooldown();
   });
 }
+
+function updateFeatureSwapToggle(aiFeatures) {
+  const btn = document.getElementById('featureSwapEnterTog');
+  if (!btn) return;
+  const on = !!(aiFeatures && aiFeatures.swapEnterShiftEnter);
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-pressed', String(on));
+}
+
+document.getElementById('featureSwapEnterTog')?.addEventListener('click', () => {
+  const btn = document.getElementById('featureSwapEnterTog');
+  const on = !btn.classList.contains('on');
+  saveAiFeatures({ swapEnterShiftEnter: on }, () => {
+    updateFeatureSwapToggle({ swapEnterShiftEnter: on });
+  });
+});
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'sync' && changes.aiFeatures) {
+    updateFeatureSwapToggle(changes.aiFeatures.newValue || {});
+  }
+});
 
 init();
 
 // ── Admin Panel (hidden; revealed via double-click on logo) ──────────────────
 (function setupAdminPanel() {
+  if (!SLINGSHOT_DEV_MODE) return;
 
   function updateAdminPlanState() {
     const el = document.getElementById('admin-plan-state');
     if (!el) return;
+    if (!MONETIZATION_ENABLED) {
+      el.textContent = 'Monetization off (shipping build)';
+      return;
+    }
     chrome.storage.sync.get(['license', 'installDate'], d => {
       const pro = isProUnlocked(d.license);
       const trial = isTrialActive(d.installDate);

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SlingShot — Promo Tiles</title>
+<style>
+:root{
+  --bg:#edeaff; --bg2:#ffffff; --bg3:#f0eeff;
+  --border:rgba(108,99,255,0.15); --border2:rgba(108,99,255,0.3);
+  --text:#110f2a; --text2:#4a4768; --text3:#8a87a8;
+  --purple:#5548e8; --teal:#057a52;
+  --grad:linear-gradient(135deg,#6c63ff 0%,#34d399 100%);
+  --dur-fast:120ms; --dur-mid:180ms; --dur-slow:260ms;
+  --ease-out:ease-out; --ease-standard:cubic-bezier(0.2,0,0,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:48px 24px;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* Decorative background blobs */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:0.35;
+  pointer-events:none;
+  z-index:0;
+}
+.blob-1{
+  width:400px;height:400px;
+  background:linear-gradient(135deg,#6c63ff,#8b84ff);
+  top:-120px;right:-100px;
+}
+.blob-2{
+  width:320px;height:320px;
+  background:linear-gradient(135deg,#34d399,#6c63ff);
+  bottom:-80px;left:-80px;
+  opacity:0.25;
+}
+
+/* Main container */
+.container{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:960px;
+  display:flex;
+  flex-direction:column;
+  gap:40px;
+}
+
+/* Header */
+.header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:8px;
+}
+.logo-icon-wrap{
+  width:44px;height:44px;
+  border-radius:12px;
+  background:var(--grad);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 16px rgba(108,99,255,0.25);
+}
+.logo-icon-wrap img{
+  width:26px;height:26px;
+  object-fit:contain;
+}
+.logo-text-group{display:flex;flex-direction:column;gap:2px}
+.logo-wordmark{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:-1px;
+  line-height:1;
+  display:flex;
+  align-items:baseline;
+  gap:1px;
+}
+.logo-bang{color:var(--text)}
+.logo-ify{color:var(--text3)}
+.logo-dot{
+  display:inline-block;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--purple);
+  margin-left:2px;
+  margin-bottom:2px;
+  align-self:flex-end;
+}
+.logo-sub{
+  font-size:12px;
+  color:var(--text2);
+  font-weight:500;
+  letter-spacing:-0.2px;
+}
+
+/* Page title area */
+.page-title{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:32px;
+  font-weight:700;
+  letter-spacing:-0.8px;
+  margin-bottom:4px;
+}
+.page-sub{
+  font-size:14px;
+  color:var(--text2);
+  line-height:1.6;
+  margin-bottom:8px;
+}
+
+/* Tile cards */
+.tile-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 20px rgba(108,99,255,0.06);
+  transition:border-color var(--dur-slow) var(--ease-standard),box-shadow var(--dur-slow) var(--ease-standard);
+}
+.tile-card:hover{
+  border-color:var(--border2);
+  box-shadow:0 1px 3px rgba(0,0,0,0.04),0 8px 32px rgba(108,99,255,0.1);
+}
+
+/* Tile header */
+.tile-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.tile-info{display:flex;flex-direction:column;gap:6px}
+.tile-name{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:-0.4px;
+  color:var(--text);
+}
+.tile-specs{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.tile-spec{
+  font-size:13px;
+  color:var(--text2);
+  font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.tile-spec svg{
+  width:14px;height:14px;
+  stroke:var(--purple);
+  fill:none;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  flex-shrink:0;
+}
+.tile-badge{
+  font-size:10px;
+  font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;
+  font-weight:500;
+  color:var(--purple);
+  background:rgba(108,99,255,0.08);
+  border:1px solid rgba(108,99,255,0.15);
+  padding:4px 10px;
+  border-radius:20px;
+  white-space:nowrap;
+}
+
+/* Drop zone */
+.drop-zone{
+  position:relative;
+  background:var(--bg3);
+  border:2px dashed var(--border2);
+  border-radius:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  transition:border-color var(--dur-mid) var(--ease-out),background-color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out);
+  overflow:hidden;
+}
+.drop-zone::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:var(--grad);
+  opacity:0;
+  transition:opacity var(--dur-mid) var(--ease-out);
+  pointer-events:none;
+}
+.drop-zone:hover{
+  border-color:var(--purple);
+  background:rgba(108,99,255,0.04);
+  transform:translateY(-1px);
+}
+.drop-zone:hover::before{opacity:0.03}
+
+.drop-content{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+
+/* Upload icon circle */
+.upload-circle{
+  width:56px;height:56px;
+  border-radius:50%;
+  background:var(--bg2);
+  border:1.5px solid var(--border2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:border-color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-mid) var(--ease-out);
+  box-shadow:0 2px 8px rgba(108,99,255,0.08);
+}
+.drop-zone:hover .upload-circle{
+  border-color:var(--purple);
+  transform:scale(1.05);
+  box-shadow:0 4px 16px rgba(108,99,255,0.15);
+}
+.upload-circle svg{
+  width:24px;height:24px;
+  stroke:var(--purple);
+  fill:none;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.drop-label{
+  font-size:15px;
+  font-weight:500;
+  color:var(--text2);
+  transition:color var(--dur-mid) var(--ease-out);
+}
+.drop-zone:hover .drop-label{color:var(--purple)}
+
+.drop-hint{
+  font-size:11px;
+  color:var(--text3);
+  font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;
+  transition:color var(--dur-mid) var(--ease-out);
+}
+.drop-zone:hover .drop-hint{color:var(--text2)}
+
+/* Specific tile sizes */
+.small-tile{
+  width:440px;
+  height:280px;
+  align-self:center;
+}
+.marquee-tile{
+  width:100%;
+  max-width:700px;
+  height:280px;
+  align-self:center;
+}
+
+/* Scale note */
+.scale-note{
+  text-align:center;
+  font-size:11px;
+  color:var(--text3);
+  font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;
+  margin-top:-8px;
+}
+
+/* Corner decorations */
+.corner-deco{
+  position:absolute;
+  width:20px;height:20px;
+  pointer-events:none;
+}
+.corner-deco.tl{top:8px;left:8px;border-top:2px solid var(--border2);border-left:2px solid var(--border2);border-radius:4px 0 0 0;opacity:0.6}
+.corner-deco.tr{top:8px;right:8px;border-top:2px solid var(--border2);border-right:2px solid var(--border2);border-radius:0 4px 0 0;opacity:0.6}
+.corner-deco.bl{bottom:8px;left:8px;border-bottom:2px solid var(--border2);border-left:2px solid var(--border2);border-radius:0 0 0 4px;opacity:0.6}
+.corner-deco.br{bottom:8px;right:8px;border-bottom:2px solid var(--border2);border-right:2px solid var(--border2);border-radius:0 0 4px 0;opacity:0.6}
+
+/* Responsive */
+@media (max-width:560px){
+  .small-tile{width:100%;max-width:440px;height:220px}
+  .marquee-tile{height:220px}
+  .tile-card{padding:24px}
+  .page-title{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<!-- Decorative blobs -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-icon-wrap">
+      <img src="../icons/icon128.png" alt="SlingShot">
+    </div>
+    <div class="logo-text-group">
+      <div class="logo-wordmark">
+        <span class="logo-bang">Sling</span><span class="logo-ify">shot</span><span class="logo-dot"></span>
+      </div>
+      <div class="logo-sub">Chrome Web Store — Promo Assets</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="page-title">Promo Tiles</div>
+    <div class="page-sub">Upload the creative assets for your store listing. Use the exact dimensions below for best results.</div>
+  </div>
+
+  <!-- Small Promo Tile -->
+  <div class="tile-card">
+    <div class="tile-header">
+      <div class="tile-info">
+        <div class="tile-name">Small promo tile</div>
+        <div class="tile-specs">
+          <div class="tile-spec">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+            440 x 280 Canvas
+          </div>
+          <div class="tile-spec">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            JPEG or 24-bit PNG (no alpha)
+          </div>
+        </div>
+      </div>
+      <div class="tile-badge">440 x 280 px</div>
+    </div>
+
+    <div class="drop-zone small-tile">
+      <div class="corner-deco tl"></div>
+      <div class="corner-deco tr"></div>
+      <div class="corner-deco bl"></div>
+      <div class="corner-deco br"></div>
+      <div class="drop-content">
+        <div class="upload-circle">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="drop-label">Drop image here</div>
+        <div class="drop-hint">or click to browse</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marquee Promo Tile -->
+  <div class="tile-card">
+    <div class="tile-header">
+      <div class="tile-info">
+        <div class="tile-name">Marquee promo tile</div>
+        <div class="tile-specs">
+          <div class="tile-spec">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+            1400 x 560 Canvas
+          </div>
+          <div class="tile-spec">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            JPEG or 24-bit PNG (no alpha)
+          </div>
+        </div>
+      </div>
+      <div class="tile-badge">1400 x 560 px</div>
+    </div>
+
+    <div class="drop-zone marquee-tile">
+      <div class="corner-deco tl"></div>
+      <div class="corner-deco tr"></div>
+      <div class="corner-deco bl"></div>
+      <div class="corner-deco br"></div>
+      <div class="drop-content">
+        <div class="upload-circle">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="drop-label">Drop image here</div>
+        <div class="drop-hint">or click to browse</div>
+      </div>
+    </div>
+
+    <div class="scale-note">Displayed at 50% scale for preview — actual size is 1400 x 560 px</div>
+  </div>
+
+</div>
+
+</body>
+</html>

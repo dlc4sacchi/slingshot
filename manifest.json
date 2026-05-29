@@ -1,26 +1,17 @@
 {
   "manifest_version": 3,
   "name": "Slingshot",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Type a shortcut, get slung to the right place instantly.",
-  "permissions": ["storage", "tabs", "alarms"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "slingshot@slingshot.app",
+      "strict_min_version": "121.0"
+    }
+  },
+  "permissions": ["storage", "alarms"],
   "host_permissions": [
-    "https://www.google.com/search*",
-    "https://www.bing.com/search*",
-    "https://duckduckgo.com/*",
-    "https://search.brave.com/search*",
-    "https://www.ecosia.org/search*",
-    "https://kagi.com/search*",
-    "https://www.startpage.com/search*",
-    "https://www.mojeek.com/search*",
-    "https://chatgpt.com/*",
-    "https://claude.ai/*",
-    "https://gemini.google.com/*",
-    "https://chat.deepseek.com/*",
-    "https://www.kimi.com/*",
-    "https://huggingface.co/*",
-    "https://manus.im/*",
-    "https://*.supabase.co/*"
+    "https://pfqeztlfqewxeidtulik.supabase.co/*"
   ],
   "action": {
     "default_popup": "pages/popup.html",
@@ -45,31 +36,21 @@
         "mac": "Alt+Shift+B"
       },
       "description": "Open Slingshot"
-    },
-    "open_popup": {
-      "suggested_key": {
-        "default": "Alt+Shift+B",
-        "mac": "Alt+Shift+B"
-      },
-      "description": "Open Slingshot"
     }
   },
   "options_ui": {
     "page": "pages/settings.html",
     "open_in_tab": true
   },
-  "background": { "service_worker": "background.js" },
+  "background": {
+    "service_worker": "background-entry.js"
+  },
   "content_scripts": [
     {
       "matches": [
         "https://www.google.com/search*",
         "https://www.bing.com/search*",
-        "https://duckduckgo.com/*",
-        "https://search.brave.com/search*",
-        "https://www.ecosia.org/search*",
-        "https://kagi.com/search*",
-        "https://www.startpage.com/search*",
-        "https://www.mojeek.com/search*"
+        "https://duckduckgo.com/*"
       ],
       "js": ["scripts/search-interceptor.js"],
       "run_at": "document_start"
@@ -78,8 +59,7 @@
       "matches": [
         "https://gemini.google.com/*",
         "https://chat.deepseek.com/*",
-        "https://www.kimi.com/*",
-        "https://huggingface.co/*"
+        "https://www.kimi.com/*"
       ],
       "js": ["scripts/ai-autosend.js"],
       "run_at": "document_idle"
@@ -91,6 +71,21 @@
         "https://manus.im/*"
       ],
       "js": ["scripts/ai-native.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://chat.deepseek.com/*",
+        "https://www.kimi.com/*",
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://manus.im/*"
+      ],
+      "js": [
+        "scripts/features/swap-enter-shift-enter.js",
+        "scripts/features/tab-generation-status.js"
+      ],
       "run_at": "document_idle"
     }
   ],

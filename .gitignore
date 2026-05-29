@@ -1,0 +1,18 @@
+.cursor/
+.env
+.env.*
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# Generated browser-store packages and visual assets.
+slingshot_*.zip
+/screenshots/
+dist/
+build/
+
+# Local editor / extension test output.
+web-ext-artifacts/
+*.xpi

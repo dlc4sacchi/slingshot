@@ -1,30 +1,16 @@
-importScripts('storage.js');
-importScripts('telemetry/heartbeat.js');
+// Loaded after storage.js + telemetry/heartbeat.js (see manifest background.scripts / background-entry.js).
 
 // ── Install / update handler ─────────────────────────────────────────────────
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
-    chrome.storage.sync.get(['installDate'], (data) => {
-      if (!data.installDate) {
-        chrome.storage.sync.set({ installDate: Date.now() });
-      }
+    chrome.storage.sync.get(['installDate', 'theme'], (data) => {
+      const patch = {};
+      if (!data.installDate) patch.installDate = Date.now();
+      if (data.theme === undefined) patch.theme = 'auto';
+      if (Object.keys(patch).length) chrome.storage.sync.set(patch);
     });
   }
   syncRemoteConfig();
-});
-
-// ── Keyboard shortcut → open popup ───────────────────────────────────────────
-// _execute_action suggested_key works after Web Store install.
-// open_popup named command works immediately for unpacked/dev installs.
-chrome.commands.onCommand.addListener((command) => {
-  if (command === 'open_popup') {
-    chrome.action.openPopup().catch(() => {
-      // openPopup() requires a focused window in some Chrome versions
-      chrome.windows.getCurrent({ populate: false }, (win) => {
-        if (win) chrome.action.openPopup({ windowId: win.id });
-      });
-    });
-  }
 });
 
 // ── In-memory cache ───────────────────────────────────────────────────────────
@@ -34,10 +20,18 @@ function getCached(cb) {
   getAllData((data) => { _cache = data; cb(_cache); });
 }
 // Invalidate cache when either storage area changes
-chrome.storage.onChanged.addListener(() => { _cache = null; });
+chrome.storage.onChanged.addListener(() => {
+  _cache = null;
+});
 
 // ── Messages from content scripts & settings page ────────────────────────────
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.type === 'SLINGSHOT_SET_TAB_TITLE' && sender.tab && sender.tab.id != null) {
+    const title = typeof msg.title === 'string' ? msg.title : '';
+    if (title.length > 0) chrome.tabs.update(sender.tab.id, { title });
+    sendResponse({ ok: true });
+    return;
+  }
   if (msg.type === 'BANG_QUERY') {
     getCached(({ aiSites, searchEngines, bangChar, enabled }) => {
       if (!enabled) { sendResponse({ handled: false }); return; }

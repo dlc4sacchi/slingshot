@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#edeaff; --bg2:#ffffff; --bg3:#f0eeff;
@@ -22,18 +19,18 @@ html.dark{
   --purple:#8b84ff; --teal:#34d399;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{width:300px;background:var(--bg);color:var(--text);font-family:'Sora',system-ui,sans-serif;padding:12px}
+body{width:300px;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:12px}
 
 /* Header */
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 
-.logo-bang-p{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;letter-spacing:-0.8px;color:var(--text)}
-.logo-ify-p{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;letter-spacing:-0.8px;color:var(--text3)}
+.logo-bang-p{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:18px;font-weight:800;letter-spacing:-0.8px;color:var(--text)}
+.logo-ify-p{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:18px;font-weight:800;letter-spacing:-0.8px;color:var(--text3)}
 .logo-dot-p{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--purple);margin-left:2px;margin-bottom:1px;vertical-align:bottom}
 .logo-row{display:flex;align-items:center;gap:7px}
 .logo-wordmark{display:inline-flex;align-items:baseline;line-height:1}
-.logo-icon{width:24px;height:24px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;font-family:'Bricolage Grotesque',system-ui,sans-serif}
-.logo-text{font-size:14px;font-weight:800;font-family:'Bricolage Grotesque',system-ui,sans-serif;background:linear-gradient(90deg,#7F77DD,#5DCAA5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-icon{width:24px;height:24px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.logo-text{font-size:14px;font-weight:800;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(90deg,#7F77DD,#5DCAA5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .header-actions{display:flex;align-items:center;gap:5px}
 .icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color var(--dur-mid) var(--ease-out),color var(--dur-mid) var(--ease-out),border-color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
 .icon-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
@@ -41,7 +38,7 @@ body{width:300px;background:var(--bg);color:var(--text);font-family:'Sora',syste
 .icon-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* Section label */
-.section-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;font-family:'DM Mono',monospace}
+.section-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 
 /* Cheatsheet grid — 2 columns */
 .cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:8px}
@@ -49,7 +46,7 @@ body{width:300px;background:var(--bg);color:var(--text);font-family:'Sora',syste
 .cheat-icon{width:14px;height:14px;border-radius:3px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px var(--border)}
 .cheat-icon img{width:14px;height:14px;object-fit:cover;display:block;border-radius:3px}
 .cheat-name{font-size:11px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cheat-bang{font-size:10px;color:var(--purple);font-family:'DM Mono',monospace;flex-shrink:0}
+.cheat-bang{font-size:10px;color:var(--purple);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;flex-shrink:0}
 .empty-msg{font-size:11px;color:var(--text3);padding:4px 0;grid-column:1/-1}
 
 /* Divider */
@@ -58,7 +55,7 @@ body{width:300px;background:var(--bg);color:var(--text);font-family:'Sora',syste
 /* Footer shortcut hint */
 .footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:7px;border-top:1px solid var(--border)}
 .shortcut-hint{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px}
-.kbd{display:inline-flex;align-items:center;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-size:9px;font-family:'DM Mono',monospace;color:var(--text2)}
+.kbd{display:inline-flex;align-items:center;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-size:9px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--text2)}
 /* ── Theme transition ── */
 html.theme-ready{transition:background-color var(--dur-slow) var(--ease-out)}
 html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out),border-color var(--dur-slow) var(--ease-out)}

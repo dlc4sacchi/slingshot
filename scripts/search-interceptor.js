@@ -5,11 +5,7 @@
   // This script ONLY runs on Search Engine pages defined in manifest.json
 
   const hostname = window.location.hostname;
-  const SEARCH_ENGINE_HOSTS = [
-    'www.google.com', 'www.bing.com', 'duckduckgo.com',
-    'search.brave.com', 'www.ecosia.org', 'kagi.com',
-    'www.startpage.com', 'www.mojeek.com'
-  ];
+  const SEARCH_ENGINE_HOSTS = ['www.google.com', 'www.bing.com', 'duckduckgo.com'];
 
   if (SEARCH_ENGINE_HOSTS.includes(hostname)) {
     const query = extractSearchQuery();

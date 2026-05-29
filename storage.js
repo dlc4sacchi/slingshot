@@ -1,6 +1,6 @@
 // ── Storage strategy ──────────────────────────────────────────────────────────
 // chrome.storage.sync  → small settings: bangChar, enabled, license, installDate,
-//                        theme, installId, lastExport, lastRequestTime
+//                        theme, installId, lastExport, aiFeatures
 // chrome.storage.local → full site arrays (aiSites, searchEngines) including
 //                        custom entries with potentially long URLs.
 //                        5 MB limit vs 100 KB for sync.
@@ -30,6 +30,13 @@ const DEFAULT_SEARCH_ENGINES = [
 const FREE_LIMIT = 2;
 const TRIAL_DAYS = 30;
 
+/** When false, trial / Pro UI and active-site limits are off (shipping build). Set true to re-enable monetization. */
+var MONETIZATION_ENABLED = false;
+
+const DEFAULT_AI_FEATURES = {
+  swapEnterShiftEnter: false,
+};
+
 // ── Supabase Configuration ──────────────────────────────────────────────────────
 const SUPABASE_CONFIG = {
   URL: 'https://pfqeztlfqewxeidtulik.supabase.co',
@@ -38,8 +45,11 @@ const SUPABASE_CONFIG = {
 
 // Read both storage areas and merge results
 function getAllData(cb) {
-  chrome.storage.sync.get(['license', 'enabled', 'bangChar', 'installDate'], (syncData) => {
+  chrome.storage.sync.get(['license', 'enabled', 'bangChar', 'installDate', 'aiFeatures'], (syncData) => {
     chrome.storage.local.get(['aiSites', 'searchEngines'], (localData) => {
+      const rawFeatures = syncData.aiFeatures && typeof syncData.aiFeatures === 'object'
+        ? syncData.aiFeatures
+        : {};
       cb({
         aiSites:       localData.aiSites?.length > 0 ? localData.aiSites : mergeSites([], DEFAULT_AI_SITES),
         searchEngines: localData.searchEngines?.length > 0 ? localData.searchEngines : mergeSites([], DEFAULT_SEARCH_ENGINES),
@@ -47,6 +57,7 @@ function getAllData(cb) {
         enabled:       syncData.enabled        !== false,
         bangChar:      syncData.bangChar       || '!',
         installDate:   syncData.installDate    || null,
+        aiFeatures:    { ...DEFAULT_AI_FEATURES, ...rawFeatures },
       });
     });
   });
@@ -63,6 +74,13 @@ function saveSearchEngines(eng, cb) { chrome.storage.local.set({ searchEngines: 
 // Small settings stay in sync (so they follow the user across devices)
 function saveBangChar(char, cb)     { chrome.storage.sync.set({ bangChar: char }, cb); }
 function saveEnabled(val, cb)       { chrome.storage.sync.set({ enabled: val }, cb); }
+function saveAiFeatures(partial, cb) {
+  chrome.storage.sync.get(['aiFeatures'], (d) => {
+    const prev = d.aiFeatures && typeof d.aiFeatures === 'object' ? d.aiFeatures : {};
+    const merged = { ...DEFAULT_AI_FEATURES, ...prev, ...partial };
+    chrome.storage.sync.set({ aiFeatures: merged }, cb);
+  });
+}
 
 function isProUnlocked(license)     { return license && license.length > 6; }
 function getActiveSiteCount(sites)  { return sites.filter(s => s.active).length; }

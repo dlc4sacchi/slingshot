@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Slingshot Settings</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#edeaff; --s1:#ffffff; --s2:#f0eeff; --s3:#e2deff;
@@ -32,10 +29,9 @@ html.dark :root, html.dark{
   --red:#f87171; --red-bg:rgba(248,113,113,0.07); --red-bd:rgba(248,113,113,0.18);
   --glow:0 0 0 1px rgba(139,132,255,0.15),0 2px 12px rgba(108,99,255,0.08);
 }
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=Sora:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
-body{font-family:'Sora',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100%;display:flex;flex-direction:column}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100%;display:flex;flex-direction:column}
 a{text-decoration:none;color:inherit}
 .app{display:flex;height:100vh;overflow:hidden}
 .sidebar{width:var(--sidebar);flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
@@ -44,10 +40,10 @@ a{text-decoration:none;color:inherit}
 /* logo */
 .sb-logo{display:flex;align-items:center;gap:8px;line-height:1;user-select:none}
 .sb-logo-wordmark{display:inline-flex;align-items:baseline;line-height:1}
-.logo-bang{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;font-weight:800;letter-spacing:-1.2px;color:var(--text)}
+.logo-bang{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:27px;font-weight:800;letter-spacing:-1.2px;color:var(--text)}
 html:not(.dark) .logo-bang{color:#0a0818}
 html.dark .logo-bang{color:#ffffff}
-.logo-ify{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;font-weight:800;letter-spacing:-1.2px;color:var(--text3)}
+.logo-ify{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:27px;font-weight:800;letter-spacing:-1.2px;color:var(--text3)}
 html.dark .logo-ify{color:#555580}
 /* ── Theme transition animation ── */
 html.theme-ready{transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out)}
@@ -55,25 +51,28 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 /* exclude elements that need their own transitions */
 .tog,.tog-k,.storage-bar-fill,.nav-item,.site-row,.del-btn,.inact-btn,.warn-icon .warn-tip,.cf,.bang-display,.hw-step{transition-duration:unset}
 .logo-mark{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--p);margin-left:2px;margin-bottom:2px;flex-shrink:0;align-self:flex-end}
-.sb-ver{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:1px}
+.sb-ver{font-size:10px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;margin-top:1px}
 .sb-nav{padding:12px 10px;flex:1}
 .nav-section{margin-bottom:4px}
 .nav-label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);padding:6px 8px 4px}
 .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);border:1px solid transparent;user-select:none}
 .nav-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+/* Lucide-style nav icons: same stroke family as News / Requests / Backup */
+.nav-item#navProPlan svg{fill:currentColor;stroke:none}
+.nav-item#navProPlan svg *{fill:currentColor;stroke:none}
 .nav-item:hover{background:var(--s2);color:var(--text)}
 .nav-item.active{background:rgba(108,99,255,0.1);color:var(--p);border-color:rgba(108,99,255,0.15)}
-.nav-item .badge{margin-left:auto;font-size:10px;font-family:'DM Mono',monospace;background:rgba(108,99,255,0.1);color:var(--p);border:1px solid rgba(108,99,255,0.15);padding:1px 6px;border-radius:20px}
+.nav-item .badge{margin-left:auto;font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;background:rgba(108,99,255,0.1);color:var(--p);border:1px solid rgba(108,99,255,0.15);padding:1px 6px;border-radius:20px}
 .sb-bottom{padding:12px 10px;border-top:1px solid var(--border)}
 .storage-bar-wrap{margin-bottom:10px;padding:0 2px}
-.storage-bar-label{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:5px}
+.storage-bar-label{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;margin-bottom:5px}
 .storage-bar-track{height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
 .storage-bar-fill{height:100%;border-radius:2px;background:var(--grad);transition:width 0.4s ease}
 .storage-bar-fill.warn{background:linear-gradient(90deg,#f59e0b,#f97316)}
 .storage-bar-fill.danger{background:linear-gradient(90deg,#ef4444,#dc2626)}
 .plan-chip{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--s2);border:1px solid var(--border);border-radius:10px}
 .plan-name{font-size:12px;font-weight:600;color:var(--text)}
-.plan-tag{font-size:10px;font-weight:700;font-family:'DM Mono',monospace;color:var(--p);background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.18);padding:2px 7px;border-radius:20px}
+.plan-tag{font-size:10px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--p);background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.18);padding:2px 7px;border-radius:20px}
 .plan-tag.pro{color:var(--t);background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.2)}
 .main{flex:1;overflow-y:auto}
 .main-inner{padding:32px 36px;max-width:720px;width:100%;margin:0 auto}
@@ -86,14 +85,14 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 .sync-btn.syncing{pointer-events:none;opacity:.6}
 @keyframes sync-spin{to{transform:rotate(360deg)}}
 .pg-sub{font-size:14px;color:var(--text2);line-height:1.6}
-.pg-sub code{font-family:'DM Mono',monospace;background:var(--code-inline-bg);padding:1px 6px;border-radius:5px;font-size:13px;box-decoration-break:clone;-webkit-box-decoration-break:clone;color:var(--text)}
-.sync-explain code{font-family:'DM Mono',monospace;background:var(--code-inline-bg);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--text)}
-#page-admin code#admin-plan-state{font-family:'DM Mono',monospace;background:var(--code-inline-bg);padding:2px 6px;border-radius:4px;color:var(--text)}
+.pg-sub code{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;background:var(--code-inline-bg);padding:1px 6px;border-radius:5px;font-size:13px;box-decoration-break:clone;-webkit-box-decoration-break:clone;color:var(--text)}
+.sync-explain code{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;background:var(--code-inline-bg);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--text)}
+#page-admin code#admin-plan-state{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;background:var(--code-inline-bg);padding:2px 6px;border-radius:4px;color:var(--text)}
 .card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;transition:border-color var(--dur-slow) var(--ease-standard)}
 .card:hover{border-color:var(--border2)}
 .card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .card-title{font-size:13px;font-weight:600;color:var(--text)}
-.fire-pill{font-size:11px;font-family:'DM Mono',monospace;color:var(--p)}
+.fire-pill{font-size:11px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--p)}
 .site-row{display:flex;align-items:center;padding:11px 18px;border-bottom:1px solid var(--border);gap:12px;transition:background-color var(--dur-fast) var(--ease-out),opacity var(--dur-mid) var(--ease-out),transform var(--dur-mid) var(--ease-out)}
 .site-row:last-child{border-bottom:none}
 .site-row:hover{background:var(--s2)}
@@ -106,14 +105,19 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 .site-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* Bang pill — lives directly in .site-row as a centred column */
 .bang-col{width:90px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.bang-tag{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--p);background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.15);padding:4px 12px;border-radius:20px;white-space:nowrap}
+.bang-tag{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;font-size:12px;font-weight:600;color:var(--p);background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.15);padding:4px 12px;border-radius:20px;white-space:nowrap}
 .bang-edit-wrap{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;width:100%}
 .bang-display:hover{background:rgba(108,99,255,0.15);border-color:rgba(108,99,255,0.3)}
-.bang-edit-input{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--p);background:rgba(108,99,255,0.1);border:1px solid var(--p);border-radius:20px;padding:4px 8px;width:72px;min-width:52px;max-width:72px;outline:none;text-align:center}
+.bang-edit-input{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;font-size:12px;font-weight:600;color:var(--p);background:rgba(108,99,255,0.1);border:1px solid var(--p);border-radius:20px;padding:4px 8px;width:72px;min-width:52px;max-width:72px;outline:none;text-align:center}
 .bang-edit-input.conflict{border-color:var(--red);color:var(--red);background:var(--red-bg);animation:shake 0.32s ease-out}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
 @keyframes row-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.site-url{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.site-url{font-size:11px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Features page: read like body copy, not URL rows */
+.feature-site-row{align-items:flex-start;padding-top:14px;padding-bottom:15px}
+.feature-site-row .site-actions{align-self:flex-start;padding-top:1px}
+.feature-desc{margin:0;font-size:12.5px;color:var(--text2);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55;letter-spacing:-0.01em}
+.feature-desc strong{color:inherit;font-weight:600}
 .site-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;min-width:62px;justify-content:flex-end}
 .del-btn, .edit-btn{width:26px;height:26px;border-radius:7px;border:none;background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
 .site-row:hover .del-btn, .site-row:hover .edit-btn, .inact-btn:hover .inact-edit{opacity:1}
@@ -132,7 +136,7 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 .tog.on .tog-k{left:18px}
 .tog:active{transform:translateY(1px)}
 .tog.on .tog-k{transform:scale(1)}
-.empty-row{padding:24px 18px;text-align:center;font-size:13px;color:var(--text3);font-family:'DM Mono',monospace}
+.empty-row{padding:24px 18px;text-align:center;font-size:13px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .inactive-wrap{padding:12px 18px;border-top:1px solid var(--border)}
 .inactive-lbl{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:8px}
 .inactive-grid-container{position:relative;max-height:106px;overflow:hidden;transition:max-height var(--dur-slow) var(--ease-standard)}
@@ -143,7 +147,8 @@ html.theme-ready *,html.theme-ready *::before,html.theme-ready *::after{transiti
 html.dark .show-all-btn{background:rgba(139,132,255,0.14);border-color:rgba(139,132,255,0.35)}
 html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgba(139,132,255,0.5)}
 .show-all-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;transition:transform var(--dur-slow) var(--ease-standard)}
-.request-nudge{display:flex;align-items:center;gap:8px;padding:9px 18px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);background:var(--s2)}
+.request-nudge{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);background:var(--s2)}
+.request-nudge:last-child{border-radius:0 0 var(--r) var(--r)}
 .request-nudge svg{width:13px;height:13px;stroke:var(--p);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .request-nudge strong{color:var(--p);font-weight:600}
 .request-nudge:hover{background:var(--s3)}
@@ -156,7 +161,7 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .custom-title{font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .warn-icon{position:relative;display:inline-flex;align-items:center;cursor:help;color:var(--amber);flex-shrink:0}
 .warn-icon svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.warn-icon .warn-tip{position:fixed;background:var(--s1);border:1px solid var(--amb-bd);color:var(--text2);font-size:11px;font-family:'Sora',sans-serif;font-weight:400;white-space:nowrap;padding:5px 10px;border-radius:7px;pointer-events:none;opacity:0;transition:opacity var(--dur-mid) var(--ease-out);z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);max-width:280px;white-space:normal}
+.warn-icon .warn-tip{position:fixed;background:var(--s1);border:1px solid var(--amb-bd);color:var(--text2);font-size:11px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:400;white-space:nowrap;padding:5px 10px;border-radius:7px;pointer-events:none;opacity:0;transition:opacity var(--dur-mid) var(--ease-out);z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);max-width:280px;white-space:normal}
 .warn-icon:hover .warn-tip{opacity:1}
 .custom-grid{display:grid;grid-template-columns:1fr 110px 1.6fr auto;gap:7px;align-items:center}
 .custom-url-row{display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;margin-top:6px}
@@ -164,65 +169,65 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .sel-hl{background:rgba(85,72,232,0.18);border-radius:2px}
 .use-example{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;display:none;align-items:center;gap:8px;flex-shrink:0;margin-top:6px}
 .use-example.visible{display:flex}
-.use-label{font-size:8.5px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
-.use-pill{background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:10px;font-family:'DM Mono',monospace}
+.use-label{font-size:8.5px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
+.use-pill{background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .use-q{color:var(--text2)}
 .use-b{color:var(--p);font-weight:700}
-.cf{padding:0 10px;height:36px;box-sizing:border-box;border-radius:8px;border:1px solid var(--border);background:var(--s1);color:var(--text);font-size:12px;font-family:'Sora',sans-serif;outline:none;transition:border-color var(--dur-fast) var(--ease-out);width:100%}
+.cf{padding:0 10px;height:36px;box-sizing:border-box;border-radius:8px;border:1px solid var(--border);background:var(--s1);color:var(--text);font-size:12px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;outline:none;transition:border-color var(--dur-fast) var(--ease-out);width:100%}
 .cf:focus{border-color:var(--p)}
-.cf.mono{font-family:'DM Mono',monospace}
+.cf.mono{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .bang-w{display:flex;align-items:center;height:36px;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;background:var(--s1);overflow:hidden;transition:border-color var(--dur-fast) var(--ease-out)}
 .bang-w:focus-within{border-color:var(--p)}
-.bang-sym{padding:0 3px 0 10px;font-size:13px;font-weight:500;color:var(--p);font-family:'DM Mono',monospace;user-select:none}
+.bang-sym{padding:0 3px 0 10px;font-size:13px;font-weight:500;color:var(--p);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;user-select:none}
 .bang-w .cf{border:none;background:transparent;padding-left:2px}
-.add-btn{padding:0 14px;height:36px;box-sizing:border-box;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:12px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);display:flex;align-items:center;justify-content:center;line-height:1}
+.add-btn{padding:0 14px;height:36px;box-sizing:border-box;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:12px;font-weight:600;cursor:pointer;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);display:flex;align-items:center;justify-content:center;line-height:1}
 .add-btn:hover{background:rgba(108,99,255,0.08)}
 .char-grid{display:flex;gap:7px;align-items:center;padding:16px 18px}
-.char-btn{width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--text2);font-size:18px;font-family:'DM Mono',monospace;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);font-weight:500}
+.char-btn{width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--text2);font-size:18px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);font-weight:500}
 .char-btn:hover{border-color:var(--border2);color:var(--text)}
 .char-btn.on{border-color:var(--p);background:rgba(108,99,255,0.1);color:var(--p)}
 
 .char-hint{padding:0 18px 16px;font-size:12px;color:var(--text2)}
-.char-hint code{font-family:'DM Mono',monospace;background:var(--code-inline-bg);padding:1px 5px;border-radius:4px;font-size:11px}
+.char-hint code{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;background:var(--code-inline-bg);padding:1px 5px;border-radius:4px;font-size:11px}
 /* Locked inactive pills */
 .inact-btn.inact-locked{opacity:0.45;cursor:not-allowed;pointer-events:auto}
 .inact-lock{color:var(--text3);display:inline-flex;align-items:center;margin-left:2px}
 .inact-lock svg{stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 .slide{min-width:100%}
-.slide-tag{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;color:var(--t);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);padding:3px 9px;border-radius:20px;margin-bottom:12px}
+.slide-tag{display:inline-block;font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--t);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);padding:3px 9px;border-radius:20px;margin-bottom:12px}
 .addr-bar{background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:9px;margin-bottom:12px}
 .addr-dots{display:flex;gap:4px}
 .addr-dot{width:9px;height:9px;border-radius:50%}
-.addr-txt{font-size:13px;font-family:'DM Mono',monospace;color:var(--text);flex:1}
+.addr-txt{font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--text);flex:1}
 .addr-txt .q{color:var(--text2)}
 .addr-txt .b{color:var(--t);font-weight:500}
 .blink{display:inline-block;width:2px;height:13px;background:var(--p);vertical-align:middle;margin-left:1px;animation:blink .9s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .outcome{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;min-height:96px}
-.chat-from{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.chat-from{font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:5px}
 .dot-online{width:5px;height:5px;border-radius:50%;background:var(--t)}
 .bubble-u{background:rgba(108,99,255,0.1);border-radius:10px 10px 3px 10px;padding:7px 11px;font-size:12px;display:inline-block;margin-bottom:8px;max-width:72%}
 .bubble-ai{display:flex;gap:8px}
-.ai-av{width:22px;height:22px;border-radius:7px;background:var(--grad);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:'DM Mono',monospace}
+.ai-av{width:22px;height:22px;border-radius:7px;background:var(--grad);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .ai-bub{background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.13);border-radius:3px 10px 10px 10px;padding:7px 11px;font-size:12px;color:var(--text2)}
 .dots3{display:inline-flex;gap:3px;align-items:center}
 .dots3 span{width:4px;height:4px;border-radius:50%;background:var(--t);animation:d3 1.2s ease-in-out infinite}
 .dots3 span:nth-child(2){animation-delay:.2s}
 .dots3 span:nth-child(3){animation-delay:.4s}
 @keyframes d3{0%,60%,100%{opacity:.2;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
-.redir-txt{font-size:11px;font-family:'DM Mono',monospace;color:var(--t);margin-bottom:8px;opacity:0;transition:opacity .3s}
+.redir-txt{font-size:11px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--t);margin-bottom:8px;opacity:0;transition:opacity .3s}
 .redir-txt.show{opacity:1}
 .r-row{padding:7px 0;border-bottom:1px solid var(--border)}
 .r-row:last-child{border-bottom:none}
-.r-src{font-size:10px;font-family:'DM Mono',monospace;color:rgba(52,211,153,0.6);margin-bottom:1px}
+.r-src{font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:rgba(52,211,153,0.6);margin-bottom:1px}
 .r-title{font-size:12px;color:var(--p);margin-bottom:2px}
 .r-snip{font-size:11px;color:var(--text3);line-height:1.4}
 .ftabs{display:flex;gap:5px}
 .ftab{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:7px 7px 0 0;padding:6px 10px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:5px;opacity:.15;transition:opacity .25s,border-color .25s}
 .ftab.show{opacity:1;border-color:var(--border2)}
 .ftab-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.ftab-body{background:var(--bg);border:1px solid var(--border);border-radius:0 0 7px 7px;padding:10px 12px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-height:40px;display:flex;align-items:center;border-top:none}
+.ftab-body{background:var(--bg);border:1px solid var(--border);border-radius:0 0 7px 7px;padding:10px 12px;font-size:11px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--text3);min-height:40px;display:flex;align-items:center;border-top:none}
 .pro-hero{background:linear-gradient(135deg,rgba(108,99,255,0.08),rgba(52,211,153,0.05));border:1px solid var(--border2);border-radius:var(--r);padding:28px 24px;margin-bottom:16px;text-align:center}
 .pro-hero-icon{width:52px;height:52px;border-radius:14px;background:var(--grad);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:#fff}
 .pro-hero-title{font-size:22px;font-weight:700;letter-spacing:-0.4px;margin-bottom:6px}
@@ -234,15 +239,15 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .feat-ico svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
 .feat-name{font-size:12px;font-weight:600;margin-bottom:2px}
 .feat-desc{font-size:11px;color:var(--text2)}
-.btn-getpro{padding:13px 28px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;letter-spacing:-0.2px;transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.btn-getpro{padding:13px 28px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:-0.2px;transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
 .btn-getpro:hover{opacity:.86}
 .pro-key-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;margin-bottom:16px}
 .pro-key-title{font-size:14px;font-weight:600;margin-bottom:4px}
 .pro-key-sub{font-size:12px;color:var(--text2);margin-bottom:14px}
 .pro-key-row{display:flex;gap:8px}
-.pro-key-input{flex:1;padding:10px 13px;border-radius:9px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:13px;font-family:'DM Mono',monospace;outline:none;transition:border-color var(--dur-fast) var(--ease-out)}
+.pro-key-input{flex:1;padding:10px 13px;border-radius:9px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;outline:none;transition:border-color var(--dur-fast) var(--ease-out)}
 .pro-key-input:focus{border-color:var(--p)}
-.btn-act{padding:10px 18px;border-radius:9px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:13px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.btn-act{padding:10px 18px;border-radius:9px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:13px;font-weight:600;cursor:pointer;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
 .btn-act:hover{background:rgba(108,99,255,0.08)}
 .pro-unlocked{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--t);font-weight:600;padding:14px 0}
 .pro-unlocked svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5}
@@ -269,7 +274,7 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .habar{background:var(--s1);padding:5px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border)}
 .hdots{display:flex;gap:4px}
 .hdots span{width:6px;height:6px;border-radius:50%;background:var(--border2);display:block}
-.hurl{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:19px;display:flex;align-items:center;font-size:9.5px;font-family:'DM Mono',monospace;overflow:hidden;white-space:nowrap;min-width:0;color:var(--text2)}
+.hurl{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:19px;display:flex;align-items:center;font-size:9.5px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;overflow:hidden;white-space:nowrap;min-width:0;color:var(--text2)}
 .hcur{display:inline-block;width:1.5px;height:9px;background:var(--p);vertical-align:middle;animation:blink .8s step-end infinite}
 .hvp{overflow:hidden;height:130px;position:relative}
 .htrack{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1)}
@@ -280,7 +285,7 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 /* slide header */
 .how-shdr{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
 .how-stitle{font-size:10px;font-weight:600;color:var(--text2)}
-.how-spill{margin-left:auto;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:9px;font-family:'DM Mono',monospace;color:var(--p);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.how-spill{margin-left:auto;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:9px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--p);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .how-sbody{flex:1;overflow:hidden}
 /* chat */
 .how-chatp{padding:7px 10px}
@@ -290,7 +295,7 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 /* google */
 .how-googp{padding:6px 10px;display:flex;flex-direction:column;gap:5px}
 .how-gi{display:flex;flex-direction:column;gap:2px}
-.how-gurl{font-size:8.5px;color:var(--t);opacity:.6;font-family:'DM Mono',monospace}
+.how-gurl{font-size:8.5px;color:var(--t);opacity:.6;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .how-gbar{height:6px;border-radius:2px;background:var(--border2)}
 .how-gsnip{height:5px;border-radius:2px;background:var(--border)}
 /* youtube */
@@ -299,7 +304,7 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .how-ytth{aspect-ratio:16/9;border-radius:3px;position:relative;display:flex;align-items:center;justify-content:center}
 .how-ytpb{width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center}
 .how-ytpb svg{width:5px;height:5px;fill:rgba(255,255,255,0.7);margin-left:1px}
-.how-ytdur{position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.65);border-radius:2px;font-size:6.5px;color:#fff;padding:1px 2px;font-family:'DM Mono',monospace}
+.how-ytdur{position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.65);border-radius:2px;font-size:6.5px;color:#fff;padding:1px 2px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .how-ytbl{height:5px;border-radius:2px;background:var(--border)}
 .how-ytbl.s{width:55%;background:rgba(108,99,255,0.1)}
 /* reddit */
@@ -308,11 +313,11 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .how-rv{display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0}
 .how-aru{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-bottom:4px solid rgba(255,86,0,0.55)}
 .how-ard{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:4px solid var(--border2)}
-.how-rvc{font-size:7.5px;color:var(--text3);font-family:'DM Mono',monospace}
+.how-rvc{font-size:7.5px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .how-ri{flex:1;display:flex;flex-direction:column;gap:2px}
 .how-rbar{height:6px;border-radius:2px;background:var(--border2)}
 .how-rbar.s{width:55%;background:var(--border);height:5px}
-.how-rmeta{font-size:7.5px;color:var(--text3);font-family:'DM Mono',monospace}
+.how-rmeta{font-size:7.5px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 /* spotify */
 .how-spp{padding:6px 9px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
 .how-spc{display:flex;flex-direction:column;gap:3px}
@@ -334,7 +339,7 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .how-st{width:6px;height:6px;background:#ff9900;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
 .how-st.h{opacity:.22}
 /* bang placement examples */
-.how-expill{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;font-family:'DM Mono',monospace}
+.how-expill{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .how-bang{color:var(--t);font-weight:600}
 .how-qt{color:var(--text2)}
 /* ── Requests page ── */
@@ -344,19 +349,20 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .req-item{display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid var(--border);gap:12px;transition:background-color var(--dur-mid) var(--ease-out)}
 .req-item:last-child{border-bottom:none}
 .req-item:hover{background:var(--s2)}
-.req-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700;color:#fff;font-family:'DM Mono',monospace}
+.req-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700;color:#fff;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .req-info{flex:1;overflow:hidden}
 .req-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.req-meta{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+.req-meta{font-size:10px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .req-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.req-type{font-size:9px;font-weight:700;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:20px}
+.req-type{font-size:9px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;padding:3px 8px;border-radius:20px}
 .req-type.ai{color:var(--p);background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.15)}
 .req-type.se{color:var(--t);background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.18)}
 .req-type.feature{color:var(--p2);background:rgba(108,99,255,0.05);border:1px solid var(--border)}
+.req-type.bug{color:var(--red);background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22)}
 .news-item{padding:18px;border-bottom:1px solid var(--border);transition:background-color var(--dur-mid) var(--ease-out),box-shadow var(--dur-slow) var(--ease-standard);cursor:default}
 .news-item:last-child{border-bottom:none}
 .news-item:hover{background:var(--s2)}
-.vote-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:38px;padding:5px 7px;border-radius:8px;border:1.5px solid var(--border2);background:var(--s2);color:var(--text2);cursor:pointer;transition:background-color var(--dur-mid) var(--ease-out),border-color var(--dur-mid) var(--ease-out),color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out);font-family:'DM Mono',monospace;user-select:none}
+.vote-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:38px;padding:5px 7px;border-radius:8px;border:1.5px solid var(--border2);background:var(--s2);color:var(--text2);cursor:pointer;transition:background-color var(--dur-mid) var(--ease-out),border-color var(--dur-mid) var(--ease-out),color var(--dur-mid) var(--ease-out),transform var(--dur-fast) var(--ease-out);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;user-select:none}
 .vote-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform var(--dur-fast) var(--ease-out)}
 .vote-btn .vote-count{font-size:11px;font-weight:700;line-height:1;color:var(--text)}
 .vote-btn:hover{border-color:var(--p);background:rgba(108,99,255,0.06);color:var(--p)}
@@ -367,38 +373,28 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
 .vote-btn.voted .vote-count{color:var(--p)}
 
 /* ── Segmented Toggle (The Slider) ── */
+/* Inner track height = 24px: 30px total − 2×border − 2×--type-seg-inset (matches .type-seg-btn height) */
 .type-seg {
+  --type-seg-inset: 2px;
   display: inline-flex;
-  height: 28px;
+  align-items: center;
+  height: 30px;
   background: var(--s3);
   border: 1px solid var(--border);
   border-radius: 9px;
-  padding: 2px;
+  padding: var(--type-seg-inset);
   gap: 1px;
   position: relative;
   box-sizing: border-box;
 }
 
-.request-nudge {
-  padding: 12px 18px;
-  background: var(--s2);
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text2);
-  cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
-}
-
 /* The Sliding Background Pill */
 .type-pill {
   position: absolute;
-  top: 2px;
-  left: 2px;
+  top: var(--type-seg-inset);
+  left: var(--type-seg-inset);
   width: 72px; /* Start at first button width */
-  height: 24px; /* Container height minus padding */
+  height: 24px; /* Matches .type-seg-btn; inner track after fix is 24px tall */
   background: var(--s1);
   border-radius: 7px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
@@ -412,7 +408,7 @@ html.dark .show-all-btn:hover{background:rgba(139,132,255,0.24);border-color:rgb
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 14px 1px;
+  padding: 0 14px;
   min-width: 72px;
   height: 24px;
   border-radius: 7px;
@@ -458,13 +454,8 @@ textarea.cf {
   padding-top: 12px;
 }
 
-.cf{padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:var(--s1);color:var(--text);font-size:12px;font-family:'Sora',sans-serif;outline:none;transition:border-color var(--dur-fast) var(--ease-out);width:100%}
+.cf{padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:var(--s1);color:var(--text);font-size:12px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;outline:none;transition:border-color var(--dur-fast) var(--ease-out);width:100%}
 .cf:focus{border-color:var(--p)}
-
-.nudge-row{display:flex;align-items:flex-start;gap:8px;padding:11px 18px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);transition:background-color var(--dur-fast) var(--ease-out)}
-.nudge-row:last-child{border-radius:0 0 var(--r) var(--r)}
-.nudge-row:hover{background:var(--s2)}
-.nudge-row svg{width:13px;height:13px;stroke:var(--p);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:1px}
 
 /* ── Backup page ── */
 .backup-section{margin-bottom:14px}
@@ -472,13 +463,13 @@ textarea.cf {
 .backup-info{flex:1}
 .backup-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
 .backup-sub{font-size:11px;color:var(--text2);line-height:1.5}
-.backup-btn{padding:9px 16px;border-radius:9px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:12px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);flex-shrink:0}
+.backup-btn{padding:9px 16px;border-radius:9px;border:1px solid var(--border2);background:transparent;color:var(--p);font-size:12px;font-weight:600;cursor:pointer;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);flex-shrink:0}
 .backup-btn:hover{background:rgba(108,99,255,0.08)}
 .backup-btn.danger{color:var(--red);border-color:rgba(220,38,38,0.3)}
 .backup-btn.danger:hover{background:rgba(220,38,38,0.06)}
 .backup-divider{height:1px;background:var(--border);margin:0 18px}
-.backup-note{padding:10px 18px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.6}
-.how-badge{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;color:var(--t);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);padding:2px 8px;border-radius:20px;margin-bottom:8px}
+.backup-note{padding:10px 18px;font-size:11px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;line-height:1.6}
+.how-badge{display:inline-block;font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--t);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);padding:2px 8px;border-radius:20px;margin-bottom:8px}
 
 /* ── Conflict toast ── */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--s1);border:1px solid var(--red-bd);color:var(--red);font-size:12px;font-weight:500;padding:9px 16px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.18);opacity:0;pointer-events:none;transition:opacity var(--dur-mid) var(--ease-out),transform var(--dur-mid) var(--ease-out);white-space:nowrap;z-index:9999;display:flex;align-items:center;gap:7px}
@@ -486,7 +477,7 @@ textarea.cf {
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ── How it works ── */
-.how-num{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.1em;margin-bottom:5px}
+.how-num{font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--text3);letter-spacing:.1em;margin-bottom:5px}
 .how-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
 .how-sub{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px}
 
@@ -498,7 +489,7 @@ textarea.cf {
 .how-abar{background:var(--s2);padding:5px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border)}
 .how-dots{display:flex;gap:4px}
 .how-dots span{width:6px;height:6px;border-radius:50%;background:var(--border2)}
-.how-upill{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:19px;display:flex;align-items:center;font-size:9.5px;font-family:'DM Mono',monospace;color:var(--text);overflow:hidden;white-space:nowrap;min-width:0}
+.how-upill{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:19px;display:flex;align-items:center;font-size:9.5px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--text);overflow:hidden;white-space:nowrap;min-width:0}
 .how-cur{display:inline-block;width:1.5px;height:9px;background:var(--p);vertical-align:middle;animation:blink .8s step-end infinite}
 .how-spin{display:inline-block;width:8px;height:8px;border:1.5px solid var(--border2);border-top-color:var(--p);border-radius:50%;vertical-align:middle;margin-left:3px;animation:spin .65s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -510,7 +501,7 @@ textarea.cf {
 /* how slide content */
 .how-shdr{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
 .how-stitle{font-size:10px;font-weight:600;color:var(--text2)}
-.how-spill{margin-left:auto;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:9px;font-family:'DM Mono',monospace;color:var(--p);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.how-spill{margin-left:auto;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:9px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--p);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .how-sbody{flex:1;overflow:hidden}
 .how-chatp{padding:7px 10px}
 .how-bu{background:rgba(108,99,255,0.1);border-radius:7px 7px 2px 7px;padding:5px 8px;font-size:10px;color:var(--text);display:inline-block;max-width:90%;margin-bottom:5px}
@@ -518,7 +509,7 @@ textarea.cf {
 .how-aicur{display:inline-block;width:1.5px;height:9px;background:var(--t);vertical-align:middle;animation:blink .8s step-end infinite}
 .how-googp{padding:7px 10px;display:flex;flex-direction:column;gap:5px}
 .how-gi{display:flex;flex-direction:column;gap:2px}
-.how-gurl{font-size:8px;color:var(--t);opacity:.5;font-family:'DM Mono',monospace}
+.how-gurl{font-size:8px;color:var(--t);opacity:.5;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 .how-gbar{height:6px;border-radius:2px;background:var(--border2)}
 .how-gsnip{height:5px;border-radius:2px;background:var(--border)}
 .how-ytp{padding:6px 9px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
@@ -557,8 +548,8 @@ textarea.cf {
 /* bang placement section */
 .bang-place-grid{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .bp-card{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
-.bp-label{font-size:9px;font-family:'DM Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
-.bp-pill{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:11px;font-family:'DM Mono',monospace;white-space:nowrap}
+.bp-label{font-size:9px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.bp-pill{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:11px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;white-space:nowrap}
 .bp-bang{color:var(--t);font-weight:700}
 .bp-text{color:var(--text2)}
 .bp-note{font-size:11px;color:var(--text3);line-height:1.6}
@@ -570,7 +561,7 @@ textarea.cf {
 .hw-sec:hover{border-color:var(--border2);box-shadow:var(--glow,0 0 0 1px rgba(108,99,255,0.08),0 2px 10px rgba(108,99,255,0.05))}
 /* text head area */
 .hw-head{padding:18px 18px 14px}
-.hw-num{font-size:10px;font-family:'DM Mono',monospace;color:var(--p);opacity:.45;letter-spacing:.12em;margin-bottom:5px}
+.hw-num{font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--p);opacity:.45;letter-spacing:.12em;margin-bottom:5px}
 .hw-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:4px}
 .hw-sub{font-size:12px;color:var(--text2);line-height:1.6;margin:0}
 /* divider between sections becomes a visual gap — no separate element needed */
@@ -580,9 +571,9 @@ textarea.cf {
 .hw-step{display:flex;align-items:center;opacity:.25;transition:opacity .3s}
 .hw-step.on{opacity:1}
 .hw-si{display:flex;align-items:center;gap:4px}
-.hw-sn{width:16px;height:16px;border-radius:50%;border:1px solid var(--border2);font-size:8px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;color:var(--text3);font-weight:600;flex-shrink:0}
+.hw-sn{width:16px;height:16px;border-radius:50%;border:1px solid var(--border2);font-size:8px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;display:flex;align-items:center;justify-content:center;color:var(--text3);font-weight:600;flex-shrink:0}
 .hw-step.on .hw-sn{background:var(--p);color:#fff;border-color:var(--p)}
-.hw-sl{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap}
+.hw-sl{font-size:9px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;white-space:nowrap}
 .hw-step.on .hw-sl{color:var(--text2)}
 .hw-sline{flex:1;min-width:8px;height:1px;background:var(--border);margin:0 4px}
 /* browser area — no extra box, no border */
@@ -595,7 +586,7 @@ textarea.cf {
 .hw-abar{background:var(--s2);padding:5px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);flex-shrink:0}
 .hw-dots{display:flex;gap:4px}
 .hw-dots span{width:6px;height:6px;border-radius:50%;background:var(--border2);display:block}
-.hw-upill{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:20px;display:flex;align-items:center;font-size:9.5px;font-family:'DM Mono',monospace;overflow:hidden;white-space:nowrap;min-width:0;color:var(--text2)}
+.hw-upill{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;height:20px;display:flex;align-items:center;font-size:9.5px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;overflow:hidden;white-space:nowrap;min-width:0;color:var(--text2)}
 .hw-un{color:var(--text3)}.hw-ub{color:var(--t);font-weight:700}.hw-ue{color:var(--text);font-size:8.5px}
 .hw-cur{display:inline-block;width:1.5px;height:9px;background:var(--p);vertical-align:middle;animation:blink .8s step-end infinite}
 .hw-spin{display:inline-block;width:8px;height:8px;border:1.5px solid var(--border2);border-top-color:var(--p);border-radius:50%;vertical-align:middle;margin-left:3px;animation:spin .65s linear infinite}
@@ -610,12 +601,12 @@ textarea.cf {
 /* bang placement section */
 .hw-pills{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:0 18px 18px}
 .hw-pill-card{display:flex;flex-direction:column;align-items:center;gap:6px}
-.hw-pill-label{font-size:9px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
-.hw-expill{background:var(--s2);border:1px solid var(--border2);border-radius:7px;padding:7px 12px;font-size:11px;font-family:'DM Mono',monospace;white-space:nowrap}
+.hw-pill-label{font-size:9px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.hw-expill{background:var(--s2);border:1px solid var(--border2);border-radius:7px;padding:7px 12px;font-size:11px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;white-space:nowrap}
 .hw-bang{color:var(--t);font-weight:700}
 .hw-qt{color:var(--text2)}
 .hw-note{font-size:11px;color:var(--text3);line-height:1.6;margin-top:2px;padding:0 18px 18px}
-.hw-note-code{color:var(--text2);background:var(--code-inline-bg);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace}
+.hw-note-code{color:var(--text2);background:var(--code-inline-bg);padding:1px 6px;border-radius:4px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 @media (hover:hover){
   .sync-btn:hover,.show-all-btn:hover,.inact-btn:hover,.add-btn:hover,.btn-act:hover,.btn-getpro:hover,.backup-btn:hover{transform:translateY(-1px)}
 }
@@ -648,11 +639,11 @@ textarea.cf {
       </div>
       <div class="type-seg" id="themeSeg">
         <div class="type-pill"></div>
-        <button type="button" class="type-seg-btn on" data-mode="light">
+        <button type="button" class="type-seg-btn" data-mode="light">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           Light
         </button>
-        <button type="button" class="type-seg-btn" data-mode="auto">
+        <button type="button" class="type-seg-btn on" data-mode="auto">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor" stroke="none"/></svg>
           Auto
         </button>
@@ -666,24 +657,28 @@ textarea.cf {
       <div class="nav-section">
         <div class="nav-label">Configure</div>
         <div class="nav-item active" data-page="search">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           Search Engines
           <span class="badge" id="srCount">2</span>
         </div>
         <div class="nav-item" data-page="ai">
-          <svg viewBox="0 0 24 24"><path d="M12 2L13.09 8.26L19 6L14.74 10.74L21 12L14.74 13.26L19 18L13.09 15.74L12 22L10.91 15.74L5 18L9.26 13.26L3 12L9.26 10.74L5 6L10.91 8.26L12 2Z" fill="currentColor" stroke="none"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           AI Prompter
           <span class="badge" id="aiCount">2</span>
         </div>
+        <div class="nav-item" data-page="features">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="12" x="2" y="6" rx="6" ry="6"/><circle cx="16" cy="12" r="2"/></svg>
+          Features
+        </div>
         <div class="nav-item" data-page="bang">
-          <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
           Shortcuts
         </div>
       </div>
       <div class="nav-section">
         <div class="nav-label">Learn</div>
         <div class="nav-item" data-page="how">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
           How it works
         </div>
       </div>
@@ -716,8 +711,8 @@ textarea.cf {
     </div>
     <div class="sb-bottom">
       <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 4px 8px">
-        <span style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">v0.4.0</span>
-        <span style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">slingshot</span>
+        <span style="font-size:10px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace">v0.5.0</span>
+        <span style="font-size:10px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace">slingshot</span>
       </div>
       <div class="storage-bar-wrap">
         <div class="storage-bar-label">
@@ -755,9 +750,32 @@ textarea.cf {
               <div class="inactive-grid" id="aiInactive"></div>
             </div>
           </div>
-          <div class="nudge-row" data-goto="requests" style="cursor:pointer">
+          <div class="request-nudge" data-goto="requests">
             <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             Don't see the AI you want? <strong>Request it →</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-section" id="page-features">
+        <div class="pg-header">
+          <div class="pg-title">Features</div>
+          <div class="pg-sub">Optional quality-of-life tweaks for AI sites. More toggles will appear here as they ship.</div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Quality of life</span>
+          </div>
+          <div id="featuresToggles">
+            <div class="site-row feature-site-row" style="border-bottom:none">
+              <div class="site-info">
+                <div class="site-top" style="margin-bottom:6px"><span class="site-name">Swap Enter / Shift+Enter</span></div>
+                <p class="feature-desc">On most AI chats, <strong>Enter</strong> sends your message. <strong>Shift+Enter</strong> starts a new line. Turn this on to <strong>swap</strong> those two. Whichever feels wrong today becomes the other.</p>
+              </div>
+              <div class="site-actions">
+                <button type="button" class="tog" id="featureSwapEnterTog" aria-pressed="false" title="Swap Enter (send) and Shift+Enter (new line) on AI chat pages"><div class="tog-k"></div></button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -803,7 +821,7 @@ textarea.cf {
               <button class="add-btn" id="srAutoFillBtn" style="height:24px;padding:0 9px;font-size:11px;margin-left:6px;">Auto fill</button>
               <div class="warn-icon" style="margin-left:4px;">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <span class="warn-tip">First, search for anything on the website you want to add, then click Auto fill. Slingshot turns the results page into a template you can edit before adding. It will not always work.</span>
+                <span class="warn-tip">First, search manually on the site you want to add, copy the URL from the address bar, then click Auto fill. Slingshot turns the results page into a template you can edit before adding. It will not always work.</span>
               </div>
             </div>
             <div class="custom-grid">
@@ -837,11 +855,11 @@ textarea.cf {
           </div>
           <div style="padding:14px 18px">
             <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
-              Press this shortcut anywhere to open the Slingshot cheatsheet popup. To change it, use Chrome's built-in shortcut manager.
+              Press this shortcut anywhere to open the Slingshot cheatsheet popup. To change it, use your browser’s extension shortcut settings.
             </div>
-            <a id="chromeShortcutLink" href="#" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--p);text-decoration:none">
+            <a id="shortcutManagerLink" href="#" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--p);text-decoration:none">
               <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Manage in chrome://extensions/shortcuts
+              Manage keyboard shortcuts
             </a>
           </div>
         </div>
@@ -957,7 +975,7 @@ textarea.cf {
           <div class="hw-head">
             <div class="hw-num">05</div>
             <div class="hw-title">Make a shortcut for any platform</div>
-            <div class="hw-sub">Search a platform, copy the URL, swap your query for <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--t);background:rgba(5,122,82,0.08);padding:1px 4px;border-radius:3px">%s</code>. Instant shortcut to anything you search regularly.</div>
+            <div class="hw-sub">Search a platform, copy the URL, swap your query for <code style="font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;font-size:11px;color:var(--t);background:rgba(5,122,82,0.08);padding:1px 4px;border-radius:3px">%s</code>. Instant shortcut to anything you search regularly.</div>
           </div>
           <div class="hw-steps">
             <div class="hw-step on" id="h5_0"><div class="hw-si"><div class="hw-sn">1</div><span class="hw-sl">search it</span></div></div><div class="hw-sline"></div>
@@ -1007,7 +1025,7 @@ textarea.cf {
               <div><div class="feat-name">Early access</div><div class="feat-desc">New features before everyone</div></div>
             </div>
           </div>
-          <a href="https://gumroad.com" target="_blank"><button class="btn-getpro">Get Pro</button></a>
+          <button class="btn-getpro" type="button" disabled title="Pro is not available in this public build">Get Pro</button>
         </div>
         <div class="pro-key-card" id="proKeyCard">
           <div id="proKeyHeader">
@@ -1052,6 +1070,7 @@ textarea.cf {
                 <button class="type-seg-btn on" data-val="ai">AI Site</button>
                 <button class="type-seg-btn" data-val="se">Search</button>
                 <button class="type-seg-btn" data-val="feature">Feature</button>
+                <button class="type-seg-btn" data-val="bug">Bug report</button>
               </div>
               <div style="flex:1"></div>
               <button class="add-btn" id="reqSubmitBtn" style="height:28px; line-height:1; display:flex; align-items:center; padding:0 14px">+ Submit Request</button>
@@ -1067,11 +1086,11 @@ textarea.cf {
           </div>
           <div class="card-header" style="border-radius:0">
             <span class="card-title">Top requests</span>
-            <span style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">sorted by votes</span>
+            <span style="font-size:10px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace">sorted by votes</span>
           </div>
           <div id="reqList">
             <!-- Dynamic list inserted via settings.js -->
-            <div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:'DM Mono',monospace" id="reqLoading">
+            <div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace" id="reqLoading">
               loading requests<span class="how-spin"></span>
             </div>
           </div>
@@ -1093,7 +1112,7 @@ textarea.cf {
             <span class="card-title">Billboard</span>
           </div>
           <div id="newsList">
-            <div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:'DM Mono',monospace" id="newsLoading">
+            <div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace" id="newsLoading">
               loading news<span class="how-spin"></span>
             </div>
           </div>
@@ -1111,7 +1130,7 @@ textarea.cf {
           <div class="backup-row">
             <div class="backup-info">
               <div class="backup-label">Download backup</div>
-              <div class="backup-sub">Saves all your active sites, custom shortcuts, trigger character, and Pro license key to a .json file on your device.</div>
+              <div class="backup-sub">Saves all your active sites, custom shortcuts, trigger character, and sync metadata to a .json file on your device.</div>
             </div>
             <button class="backup-btn" id="exportBtn">↓ Export</button>
           </div>
@@ -1122,7 +1141,7 @@ textarea.cf {
           <div class="backup-row">
             <div class="backup-info">
               <div class="backup-label">Restore from file</div>
-              <div class="backup-sub">Load a previously exported slingshot_backup.json. This will overwrite your current settings.</div>
+              <div class="backup-sub">Load a previously exported backup (.json). This will overwrite your current settings.</div>
             </div>
             <button class="backup-btn" id="importBtn">↑ Import</button>
             <input type="file" id="importFile" accept=".json" style="display:none" />
@@ -1161,9 +1180,10 @@ textarea.cf {
     <div style="display:flex;flex-wrap:wrap;gap:8px">
       <button class="add-btn" id="admin-wipe-all" style="color:var(--red);border-color:rgba(220,38,38,0.3)">💥 Wipe Everything (Fresh Install)</button>
       <button class="add-btn" id="admin-dump">📦 Dump Storage to Console</button>
-      <pre id="admin-storage-out" style="font-size:10px;font-family:'DM Mono',monospace;background:var(--code-inline-bg);border-radius:8px;padding:12px;overflow:auto;max-height:240px;display:none;white-space:pre-wrap"></pre>
+      <pre id="admin-storage-out" style="font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;background:var(--code-inline-bg);border-radius:8px;padding:12px;overflow:auto;max-height:240px;display:none;white-space:pre-wrap"></pre>
     </div>
 
+    <div data-monetization-only>
     <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:8px">Subscription 3-State Simulation</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px">
       <button class="add-btn" id="admin-state1">🟢 State 1: 30-Day Free Trial</button>
@@ -1174,11 +1194,14 @@ textarea.cf {
     <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:8px">Plan Enforcement</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px">
       <button class="add-btn" id="admin-enforce">🔒 Force Enforce Limits + Re-render</button>
+    </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:8px">Dev</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
       <button class="add-btn" id="admin-reload">🔄 Reload Options Page</button>
       <button class="add-btn" id="admin-force-sync">☁️ Force Daily Sync</button>
     </div>
-
-
 
     <div style="font-size:11px;color:var(--text3);margin-top:4px">Current plan state: <code id="admin-plan-state">loading…</code></div>
   </div>
